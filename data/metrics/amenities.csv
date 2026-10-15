@@ -39,6 +39,10 @@ regina,healthcare_10km,54,2026-10-15,amenities,2026-10-15T01:34:19Z
 regina,parks_10km,364,2026-10-15,amenities,2026-10-15T01:34:19Z
 regina,schools_10km,107,2026-10-15,amenities,2026-10-15T01:34:19Z
 regina,transit_stops_10km,1403,2026-10-15,amenities,2026-10-15T01:34:19Z
+saskatoon,healthcare_10km,36,2026-10-15,amenities,2026-10-15T16:16:43Z
+saskatoon,parks_10km,294,2026-10-15,amenities,2026-10-15T16:16:43Z
+saskatoon,schools_10km,114,2026-10-15,amenities,2026-10-15T16:16:43Z
+saskatoon,transit_stops_10km,754,2026-10-15,amenities,2026-10-15T16:16:43Z
 sherbrooke,healthcare_10km,25,2026-10-15,amenities,2026-10-15T01:34:19Z
 sherbrooke,parks_10km,164,2026-10-15,amenities,2026-10-15T01:34:19Z
 sherbrooke,schools_10km,63,2026-10-15,amenities,2026-10-15T01:34:19Z
