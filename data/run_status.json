@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T16:16:43Z",
+  "generated_at": "2026-10-15T18:58:47Z",
   "sources": [
     {
       "source": "weather",
@@ -8,28 +8,22 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-15T16:16:43Z",
-      "seconds": 3.6
+      "fetched_at": "2026-10-15T18:58:47Z",
+      "seconds": 43.8
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 120,
-      "cities": 20,
-      "fetched_at": "2026-10-15T16:16:43Z",
-      "seconds": 5.2
+      "state": "cached",
+      "fetched_at": "2026-10-15T16:16:43Z"
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "updated",
-      "rows": 40,
-      "cities": 20,
-      "fetched_at": "2026-10-15T16:16:43Z",
-      "seconds": 3.7
+      "state": "cached",
+      "fetched_at": "2026-10-15T16:16:43Z"
     },
     {
       "source": "crime",
@@ -65,11 +59,10 @@
       "source": "amenities",
       "title": "OpenStreetMap via Overpass API",
       "url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
-      "state": "updated",
-      "rows": 4,
-      "cities": 1,
+      "state": "cached",
+      "error": "amenities: all 2 cities failed",
       "fetched_at": "2026-10-15T16:16:43Z",
-      "seconds": 57.8
+      "seconds": 5.9
     },
     {
       "source": "traffic",
