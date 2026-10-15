@@ -1,4 +1,8 @@
 city,metric,value,period,source,fetched_at
+calgary,healthcare_10km,185,2026-10-15,amenities,2026-10-15T23:34:48Z
+calgary,parks_10km,1172,2026-10-15,amenities,2026-10-15T23:34:48Z
+calgary,schools_10km,269,2026-10-15,amenities,2026-10-15T23:34:48Z
+calgary,transit_stops_10km,3151,2026-10-15,amenities,2026-10-15T23:34:48Z
 edmonton,healthcare_10km,125,2026-10-15,amenities,2026-10-15T01:34:19Z
 edmonton,parks_10km,686,2026-10-15,amenities,2026-10-15T01:34:19Z
 edmonton,schools_10km,289,2026-10-15,amenities,2026-10-15T01:34:19Z
