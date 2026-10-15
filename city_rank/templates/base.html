@@ -1,0 +1,24 @@
+{# Base layout shared by every page. Child templates fill the blocks.
+   `root` is the relative path back to docs/ ("." on the home page, ".." on city pages). #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site_title }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}Canadian cities ranked on safety, jobs, housing cost, climate, air quality, traffic and amenities. Updated automatically from public data.{% endblock %}">
+  <link rel="stylesheet" href="{{ root }}/assets/style.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <main class="wrap">
+    {% block content %}{% endblock %}
+    <footer>
+      <p>Updated {{ generated_at }} · Built automatically by GitHub Actions from public data ·
+        <a href="{{ repo_url }}">Source code</a></p>
+      <p>Scores are relative: 100 = best of the {{ total_cities }} metro areas ranked, 0 = worst. They are not an absolute measure of quality of life.</p>
+    </footer>
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

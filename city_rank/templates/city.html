@@ -1,0 +1,144 @@
+{# City detail page: headline rank, category scores, current weather, charts and every metric.
+   Charts are drawn by static/city.js from the JSON embedded at the bottom. #}
+{% extends "base.html" %}
+
+{% block title %}{{ city.name }} – {{ site_title }}{% endblock %}
+{% block description %}{{ city.name }} ranks {{ rank|ordinal_rank }} of {{ total_cities }} Canadian metro areas on safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
+{% block head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>{% endblock %}
+
+{% block content %}
+<a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a>
+<header class="site-header">
+  <div class="kicker">{{ city.cma_name }} metro area · {{ city.province }}</div>
+  <h1>{{ city.name }}</h1>
+</header>
+
+{# ---- Headline numbers ---------------------------------------------------- #}
+<section class="tiles hero-tiles" aria-label="Headline">
+  <div class="tile">
+    <div class="label">Overall rank</div>
+    <div class="value">{{ rank|ordinal_rank }}</div>
+    <div class="note">of {{ total_cities }}, with default weights</div>
+  </div>
+  <div class="tile">
+    <div class="label">Overall score</div>
+    <div class="value">{{ overall|score }}</div>
+    <div class="note">out of 100{% if coverage is not none and coverage < 0.999 %} · based on {{ (coverage * 100)|round|int }}% of the weight (some data missing){% endif %}</div>
+  </div>
+</section>
+
+{# ---- Category scores (HTML bars; same colour for every bar) -------------- #}
+<section class="card" aria-labelledby="cat-title">
+  <h2 id="cat-title">Category scores</h2>
+  <p class="muted small">0 = worst and 100 = best among the {{ total_cities }} metro areas.</p>
+  <div class="category-list">
+    {% for c in categories %}
+    <div class="category-item" title="{{ c.description }}">
+      <div><strong>{{ c.label }}</strong></div>
+      <div class="bar">
+        <div class="bar-track"><div class="bar-fill" style="width: {{ (c.score or 0)|round(1) }}%"></div></div>
+        <span class="bar-value">{{ c.score|score }}</span>
+      </div>
+      <div class="rank">{% if c.rank is not none %}{{ c.rank|ordinal_rank }} of {{ total_cities }}{% else %}no data{% endif %}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ---- Right now ------------------------------------------------------------ #}
+<section class="card" aria-labelledby="now-title">
+  <div class="card-head">
+    <h2 id="now-title">Right now</h2>
+    {% if now.observed %}<span class="muted small">Observed {{ now.observed|replace("T", " ") }} local time</span>{% endif %}
+  </div>
+  <div class="tiles">
+    <div class="tile"><div class="label">Temperature</div><div class="value">{{ now.temp }} °C</div><div class="note">{{ now.conditions }}</div></div>
+    <div class="tile"><div class="label">Humidity</div><div class="value">{{ now.humidity }}%</div></div>
+    <div class="tile"><div class="label">Wind</div><div class="value">{{ now.wind }} km/h</div></div>
+    <div class="tile"><div class="label">Air quality (US AQI)</div><div class="value">{{ now.aqi }}</div><div class="note">{{ now.aqi_label }}</div></div>
+  </div>
+  {% if forecast %}
+  <h3 style="margin-top:1rem">7-day forecast</h3>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th scope="col">Day</th><th scope="col">Conditions</th><th scope="col" class="num">High °C</th><th scope="col" class="num">Low °C</th><th scope="col" class="num">Precip. mm</th><th scope="col" class="num">Chance %</th></tr></thead>
+      <tbody>
+        {% for f in forecast %}
+        <tr><td>{{ f.date }}</td><td>{{ f.conditions }}</td><td class="num">{{ f.high }}</td><td class="num">{{ f.low }}</td><td class="num">{{ f.precip }}</td><td class="num">{{ f.chance }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+
+{# ---- Rank over time ------------------------------------------------------- #}
+<section class="card" aria-labelledby="hist-title">
+  <h2 id="hist-title">Rank over time</h2>
+  <div id="chart-rank" class="chart" data-empty="The rank history builds up with each daily run. Check back in a few days."></div>
+</section>
+
+{# ---- Climate charts -------------------------------------------------------- #}
+<section class="card" aria-labelledby="climate-title">
+  <h2 id="climate-title">Climate: past 12 months</h2>
+  {% if climate_window %}<p class="muted small">{{ climate_window }} · daily values from the Open-Meteo archive</p>{% endif %}
+  <h3>Daily high and low temperature</h3>
+  <div id="chart-temp" class="chart" data-empty="No climate data yet."></div>
+  <h3>Daily rain</h3>
+  <div id="chart-rain" class="chart" data-empty="No climate data yet."></div>
+  <h3>Daily snowfall</h3>
+  <div id="chart-snow" class="chart" data-empty="No climate data yet."></div>
+  {% if monthly %}
+  <details>
+    <summary>Show monthly table</summary>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Month</th><th scope="col" class="num">Avg high °C</th><th scope="col" class="num">Avg low °C</th><th scope="col" class="num">Rain mm</th><th scope="col" class="num">Snow cm</th><th scope="col" class="num">Sunshine h</th></tr></thead>
+        <tbody>
+          {% for m in monthly %}
+          <tr><td>{{ m.month }}</td><td class="num">{{ m.temp_max_c }}</td><td class="num">{{ m.temp_min_c }}</td><td class="num">{{ m.rain_mm }}</td><td class="num">{{ m.snowfall_cm }}</td><td class="num">{{ m.sunshine_h }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+  {% endif %}
+</section>
+
+{# ---- Traffic ----------------------------------------------------------------- #}
+<section class="card" aria-labelledby="traffic-title">
+  <h2 id="traffic-title">Rush-hour congestion</h2>
+  <p class="muted small">How much slower traffic moves than on empty roads, sampled on weekdays at 07–10 and 16–19 local time (TomTom).</p>
+  <div id="chart-traffic" class="chart" data-empty="No traffic samples yet. They are collected during weekday rush hours once a TomTom API key is configured."></div>
+</section>
+
+{# ---- Every metric -------------------------------------------------------- #}
+<section class="card" aria-labelledby="metrics-title">
+  <h2 id="metrics-title">All metrics</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th scope="col">Metric</th><th scope="col" class="num">Value</th><th scope="col">Unit</th><th scope="col" class="num">Score</th><th scope="col">Period</th><th scope="col">Source</th></tr></thead>
+      <tbody>
+        {% for g in groups %}
+        <tr class="group-row"><th colspan="6" scope="colgroup">{{ g.label }}</th></tr>
+        {% for m in g.metrics %}
+        <tr>
+          <td title="{{ m.description }}">{{ m.label }}{% if m.higher_is_better is not none %} <span class="muted small">({{ "higher" if m.higher_is_better else "lower" }} is better)</span>{% endif %}</td>
+          <td class="num">{{ m.value }}</td>
+          <td class="muted small">{{ m.unit }}</td>
+          <td class="num">{{ m.score }}</td>
+          <td class="small">{{ m.period or "—" }}</td>
+          <td class="small"><a href="{{ m.source_url }}">{{ m.source_title }}</a></td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script id="city-data" type="application/json">{{ charts|tojson }}</script>
+<script src="{{ root }}/assets/city.js" defer></script>
+{% endblock %}

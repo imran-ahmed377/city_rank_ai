@@ -1,0 +1,10 @@
+# Minimal project metadata + pytest settings. Dependencies are pinned in requirements.txt.
+[project]
+name = "city_rank_ai"
+version = "2.0.0"
+description = "Ranks Canadian metro areas on living standards using public data."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,122 @@
+{# Home page: weight sliders + rankings table + methodology + data sources.
+   The table is rendered here with the default weights (works without JavaScript);
+   static/rankings.js re-scores and re-sorts the rows when sliders move. #}
+{% extends "base.html" %}
+
+{% block content %}
+<header class="site-header">
+  <div class="kicker">Canada · {{ total_cities }} largest metro areas</div>
+  <h1>{{ site_title }}</h1>
+  <p class="lede">Which Canadian city offers the best living standards? Each metro area is scored on
+    safety, jobs, housing cost, climate, air quality, traffic and amenities using public data that
+    refreshes automatically. Set your own priorities below.</p>
+</header>
+
+{# ---- Priority sliders ---------------------------------------------------- #}
+<section class="card" aria-labelledby="weights-title">
+  <div class="card-head">
+    <div>
+      <h2 id="weights-title">Your priorities</h2>
+      <p class="muted small">Drag to change how much each category counts. The ranking updates instantly.</p>
+    </div>
+    <button type="button" id="reset-weights">Reset to defaults</button>
+  </div>
+  <div class="weights">
+    {% for c in categories %}
+    <div class="weight">
+      <label for="w-{{ c.key }}">{{ c.label }} <output id="o-{{ c.key }}" for="w-{{ c.key }}"></output></label>
+      <input type="range" id="w-{{ c.key }}" data-category="{{ c.key }}" min="0" max="10" step="1"
+             value="{{ c.default_weight }}" title="{{ c.description }}">
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# ---- Rankings table ------------------------------------------------------ #}
+<section class="card" aria-labelledby="rank-title">
+  <div class="card-head">
+    <h2 id="rank-title">Rankings</h2>
+    <span class="muted small" id="weights-state">Default weights</span>
+  </div>
+  <div class="table-scroll">
+    <table id="rank-table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Metro area</th>
+          <th scope="col">Overall</th>
+          {% for c in categories %}<th scope="col" class="num" title="{{ c.description }}">{{ c.label }}</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr data-slug="{{ row.slug }}">
+          <td class="rank-cell num">{{ row.rank|int if row.rank is not none else "—" }}</td>
+          <td class="city-cell">
+            <a href="city/{{ row.slug }}.html">{{ row.name }}</a><span class="prov">{{ row.province }}</span>
+            {% if row.coverage is not none and row.coverage < 0.999 %}<span class="partial">Partial data</span>{% endif %}
+          </td>
+          <td class="bar-cell">
+            <div class="bar">
+              <div class="bar-track"><div class="bar-fill" style="width: {{ (row.overall or 0)|round(1) }}%"></div></div>
+              <span class="bar-value">{{ row.overall|score }}</span>
+            </div>
+          </td>
+          {% for c in categories %}<td class="num">{{ row.scores[c.key]|score }}</td>{% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+      <caption>All scores 0–100 (higher is better), relative to the other metro areas. “—” means no data for that category; the overall score then uses the remaining categories.</caption>
+    </table>
+  </div>
+</section>
+
+{# ---- Methodology --------------------------------------------------------- #}
+<section class="card" aria-labelledby="method-title">
+  <h2 id="method-title">How the score works</h2>
+  <ol>
+    <li><strong>Metric scores.</strong> For each measurement, the best city gets 100 and the worst gets 0; others are placed proportionally in between. For things like crime or rent, lower values score higher.</li>
+    <li><strong>Category scores.</strong> Each category is the average of its metric scores.</li>
+    <li><strong>Overall score.</strong> A weighted average of category scores using your priorities. If a city has no data for a category, the other categories are re-weighted for that city.</li>
+  </ol>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th scope="col">Category</th><th scope="col">What it measures</th><th scope="col">Metrics</th></tr></thead>
+      <tbody>
+        {% for c in categories %}
+        <tr><td><strong>{{ c.label }}</strong></td><td>{{ c.description }}</td><td class="muted">{{ metrics_by_category[c.key]|join(", ") }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+{# ---- Data sources -------------------------------------------------------- #}
+<section class="card" aria-labelledby="sources-title">
+  <h2 id="sources-title">Data sources</h2>
+  <p class="muted small">The pipeline runs four times a day. Yearly and monthly statistics are only re-downloaded when they may have changed.</p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th scope="col">Source</th><th scope="col">Last run</th><th scope="col">Data fetched</th><th scope="col">Refresh</th></tr></thead>
+      <tbody>
+        {% for s in sources %}
+        <tr>
+          <td><a href="{{ s.url }}">{{ s.title }}</a></td>
+          <td><span class="state state-{{ s.state }}">{{ s.state }}</span>{% if s.error %} <span class="muted small">{{ s.error }}</span>{% endif %}</td>
+          <td class="small">{{ s.fetched_at or "never" }}</td>
+          <td class="small">{{ s.refresh }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="muted">No run status recorded yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{# Page data for rankings.js: categories with default weights + each city's category scores. #}
+<script id="rank-data" type="application/json">{{ {"categories": categories, "rows": rows}|tojson }}</script>
+<script src="{{ root }}/assets/rankings.js"></script>
+{% endblock %}

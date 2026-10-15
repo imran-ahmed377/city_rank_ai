@@ -1,0 +1,149 @@
+# City Rank pipeline: fetch public data, re-score the cities, publish the dashboard.
+#
+# Flow per run:
+#   1. restore data/ from the bot/data branch (so history keeps accumulating)
+#   2. run the tests
+#   3. run `python -m city_rank` (fetch -> score -> render docs/)
+#   4. push data/ + docs/ back to the bot/data branch
+#   5. deploy docs/ to GitHub Pages
+#
+# Secrets: TOMTOM_API_KEY (Settings -> Secrets and variables -> Actions).
+# Without it everything still runs; traffic just gets no new samples.
+
+name: City Rank Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Four runs a day so every Canadian time zone gets a weekday morning and an
+    # evening rush-hour traffic sample (see city_rank/sources/traffic.py):
+    #   12:00 UTC  Atlantic/Eastern/Central morning
+    #   15:00 UTC  Saskatchewan/Mountain/Pacific morning
+    #   21:00 UTC  Atlantic/Eastern/Central evening
+    #   00:00 UTC  Saskatchewan/Mountain/Pacific evening
+    - cron: "0 12 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 21 * * *"
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+# Runs queue up instead of overlapping, because each one pushes to bot/data.
+# (cancel-in-progress is false so a scheduled run is never killed half-way.)
+concurrency:
+  group: city-rank-pipeline
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+env:
+  DATA_BRANCH: bot/data
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      # Bring back the previous run's data (metrics cache + history files).
+      # Without this step every run would start from scratch and no history
+      # (rankings over time, traffic samples, observations) would accumulate.
+      - name: Restore data from the data branch
+        run: |
+          if git ls-remote --exit-code --heads origin "$DATA_BRANCH" > /dev/null; then
+            git fetch origin "$DATA_BRANCH"
+            if git cat-file -e "origin/$DATA_BRANCH:data" 2>/dev/null; then
+              git archive "origin/$DATA_BRANCH" data | tar -x
+              echo "Restored data/ from $DATA_BRANCH"
+            fi
+          else
+            echo "No $DATA_BRANCH branch yet - first run starts with empty data/"
+          fi
+
+      - name: Build dataset and dashboard
+        env:
+          TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+        run: |
+          set -o pipefail
+          python -m city_rank 2>&1 | tee workflow.log
+
+      - name: Publish data and site to the data branch
+        run: |
+          set -e
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+
+          # Work on the data branch in a separate folder (a "worktree").
+          if git ls-remote --exit-code --heads origin "$DATA_BRANCH" > /dev/null; then
+            git worktree add -B "$DATA_BRANCH" ../data-worktree "origin/$DATA_BRANCH"
+          else
+            git worktree add --orphan -b "$DATA_BRANCH" ../data-worktree
+          fi
+
+          # Replace the branch contents with this run's data/ and docs/.
+          find ../data-worktree -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          rsync -a data/ ../data-worktree/data/
+          rsync -a docs/ ../data-worktree/docs/
+
+          cd ../data-worktree
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -q -m "Update city rank data ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push origin "$DATA_BRANCH"
+          fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: city-rank-logs
+          path: |
+            workflow.log
+            data/run_status.json
+          if-no-files-found: ignore
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

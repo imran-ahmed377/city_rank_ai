@@ -1,69 +1,71 @@
-# weathertracker-ai
+# City Rank AI
 
-Daily weather and environment tracker powered by the free Open-Meteo API.
+Ranks the **20 largest Canadian metro areas** on living standards:
 
-## What this project does
+- safety
+- jobs and economy
+- housing cost
+- climate
+- air quality
+- traffic
+- amenities
 
-- Pulls weather data from Open-Meteo (no API key required).
-- Tracks multiple global cities with:
-  - recent history (`past_days`)
-  - near-term forecast (`forecast_days`)
-  - current conditions
-- Generates climate trend charts per city.
-- Builds a static dashboard page and publishes it to GitHub Pages.
-- Commits generated CSV data back to the repository on scheduled runs.
+All data comes from public APIs. A GitHub Actions workflow refreshes the data and republishes the dashboard four times a day.
 
-## Data source
+**Live dashboard:** https://imran-ahmed377.github.io/city_rank_ai/
 
-- API: `https://api.open-meteo.com/v1/forecast`
-- Free access, no key required.
+## What's on the site
 
-## Local run
+- **Rankings page.** An overall score (0–100) and seven category scores per city. Sliders let you set your own priorities, and the table re-ranks instantly.
+- **City pages.** Category scores and ranks, current weather and a 7-day forecast, 12 months of temperature, rain and snow charts, rank history, rush-hour congestion, and every underlying metric with its source and period.
+
+## Data sources
+
+| Category | Source | Key needed? |
+|---|---|---|
+| Climate, current weather, air quality | [Open-Meteo](https://open-meteo.com/) (forecast, archive and air-quality APIs) | No |
+| Safety | Statistics Canada – Crime Severity Index (35-10-0026-01) | No |
+| Jobs & economy | Statistics Canada – Labour Force Survey (14-10-0459-01), Population estimates (17-10-0148-01) | No |
+| Housing cost | CMHC average rents via Statistics Canada (34-10-0133-01) | No |
+| Amenities | OpenStreetMap via the Overpass API | No |
+| Traffic | [TomTom Traffic Flow API](https://developer.tomtom.com/) | Yes (free tier) |
+
+The scoring method is explained on the site and in [SPEC.md](SPEC.md).
+
+## Run locally
 
 ```bash
 python -m venv .venv
-# Windows PowerShell:
-.\.venv\Scripts\Activate.ps1
+source .venv/bin/activate          # Windows PowerShell: .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python weather_dashboard.py
+
+python -m pytest -q                # tests
+python -m city_rank                # fetch data, score, build docs/
 ```
 
-## Environment variables
+Then open `docs/index.html` in your browser.
 
-Optional tuning values:
+Useful options:
 
-- `PAST_DAYS` (default: `30`)
-- `FORECAST_DAYS` (default: `7`)
+| Command | What it does |
+|---|---|
+| `python -m city_rank --no-fetch` | Rebuild the site from stored data only. |
+| `python -m city_rank --only crime,jobs` | Refresh specific sources. |
+| `python -m city_rank --force` | Refetch everything. |
+| `TOMTOM_API_KEY=... python -m city_rank` | Enable traffic sampling (only during weekday rush hours). |
 
-Example:
+## Automation setup
 
-```bash
-PAST_DAYS=60 FORECAST_DAYS=10 python weather_dashboard.py
-```
+1. **GitHub Pages:** Settings → Pages → Source: **GitHub Actions**.
+2. **TomTom key:**
+   1. Create a free key at https://developer.tomtom.com/.
+   2. Add it in Settings → Secrets and variables → Actions → **New repository secret**, named `TOMTOM_API_KEY`.
+3. **Workflow:** [.github/workflows/city-rank.yml](.github/workflows/city-rank.yml) runs at 12:00, 15:00, 21:00 and 00:00 UTC, on every push to `main`, and manually from the Actions tab.
 
-## Generated files
+Fetched data and history are stored on the `bot/data` branch, so `main` contains only code.
 
-- Data:
-  - `output/weather_daily.csv`
-  - `output/weather_observations.csv`
-- Dashboard assets:
-  - `docs/index.html`
-  - `docs/charts/*.png`
-  - `docs/.nojekyll`
+## Project docs
 
-## GitHub Actions and Pages
-
-Workflow file: `.github/workflows/weather-dashboard.yml`
-
-Schedule:
-
-- `0 2 * * *` (daily at 02:00 UTC)
-
-The workflow:
-
-1. Runs `python weather_dashboard.py`
-2. Commits updated data/dashboard files
-3. Uploads `docs/` as a Pages artifact
-4. Deploys the dashboard to GitHub Pages
-
-You can also trigger runs manually from the Actions tab using `workflow_dispatch`.
+- [SPEC.md](SPEC.md): what the system does and how scores are calculated.
+- [PLAN.md](PLAN.md): progress and roadmap.
+- [CLAUDE.md](CLAUDE.md): developer guide (architecture, conventions, gotchas).
