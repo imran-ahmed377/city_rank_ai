@@ -27,6 +27,10 @@ london,healthcare_10km,27,2026-10-15,amenities,2026-10-15T01:34:19Z
 london,parks_10km,266,2026-10-15,amenities,2026-10-15T01:34:19Z
 london,schools_10km,130,2026-10-15,amenities,2026-10-15T01:34:19Z
 london,transit_stops_10km,184,2026-10-15,amenities,2026-10-15T01:34:19Z
+montreal,healthcare_10km,258,2026-10-16,amenities,2026-10-16T04:13:14Z
+montreal,parks_10km,1076,2026-10-16,amenities,2026-10-16T04:13:14Z
+montreal,schools_10km,487,2026-10-16,amenities,2026-10-16T04:13:14Z
+montreal,transit_stops_10km,6186,2026-10-16,amenities,2026-10-16T04:13:14Z
 oshawa,healthcare_10km,44,2026-10-15,amenities,2026-10-15T01:34:19Z
 oshawa,parks_10km,354,2026-10-15,amenities,2026-10-15T01:34:19Z
 oshawa,schools_10km,112,2026-10-15,amenities,2026-10-15T01:34:19Z
