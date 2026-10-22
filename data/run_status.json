@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T23:55:54Z",
+  "generated_at": "2026-10-22T04:22:05Z",
   "sources": [
     {
       "source": "weather",
@@ -8,8 +8,8 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-21T23:55:54Z",
-      "seconds": 2.3
+      "fetched_at": "2026-10-22T04:22:05Z",
+      "seconds": 3.2
     },
     {
       "source": "climate",
@@ -22,20 +22,17 @@
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "updated",
-      "rows": 40,
-      "cities": 20,
-      "fetched_at": "2026-10-21T23:55:54Z",
-      "seconds": 2.3
+      "state": "cached",
+      "fetched_at": "2026-10-21T23:55:54Z"
     },
     {
       "source": "crime",
       "title": "Statistics Canada – Crime Severity Index (35-10-0026-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3510002601",
-      "state": "cached",
-      "rows": 0,
+      "state": "failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
       "fetched_at": "2026-10-15T01:34:19Z",
-      "seconds": 0.0
+      "seconds": 0.5
     },
     {
       "source": "jobs",
@@ -50,15 +47,19 @@
       "source": "population",
       "title": "Statistics Canada – Population estimates (17-10-0148-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014801",
-      "state": "cached",
-      "fetched_at": "2026-10-15T01:34:19Z"
+      "state": "failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "fetched_at": "2026-10-15T01:34:19Z",
+      "seconds": 0.1
     },
     {
       "source": "housing",
       "title": "CMHC average rents via Statistics Canada (34-10-0133-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410013301",
-      "state": "cached",
-      "fetched_at": "2026-10-15T01:34:19Z"
+      "state": "failed",
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "fetched_at": "2026-10-15T01:34:19Z",
+      "seconds": 0.1
     },
     {
       "source": "amenities",
