@@ -37,7 +37,7 @@ This file tracks what has been built and what comes next. Tick items off as they
 - [x] Rankings home page with weight sliders (defaults plus visitor adjustments).
 - [x] A detail page per city, including the 12-month weather charts.
 - [x] Light and dark mode. Every chart has a table equivalent.
-- [x] Light/dark toggle button (remembers the choice, otherwise follows the OS) and a layered skyline silhouette background with frosted-glass cards (2026-10-26).
+- [x] Light/dark toggle button (remembers the choice, otherwise follows the OS) and a faint line-art skyline background (2026-10-26).
 
 ### Automation and fixes
 - [x] Workflow runs tests first and restores `data/` from `bot/data`.

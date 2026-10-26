@@ -25,7 +25,6 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m city_rank --only crime    # force-run one or more sources (comma-separated)
 .venv/bin/python -m city_rank --force         # refetch everything (amenities alone takes several minutes)
 .venv/bin/python scripts/check_statcan_ids.py # verify StatCan member IDs against live metadata
-.venv/bin/python scripts/draw_skyline.py      # regenerate templates/skyline.svg (background art)
 ```
 
 To view the site, open `docs/index.html` in a browser. It works from disk.
@@ -46,7 +45,7 @@ city_rank/
   scoring.py       metric score (min-max) -> category mean -> weighted overall + rank
   pipeline.py      CLI + orchestration (refresh intervals, retry missing cities, run_status.json)
   dashboard.py     builds template contexts; render_site() writes docs/
-  templates/       Jinja2: base.html, index.html, city.html; skyline.svg (generated background art)
+  templates/       Jinja2: base.html, index.html, city.html
   static/          style.css (color tokens, light/dark), theme.js (theme button), rankings.js (sliders), city.js (Plotly charts)
 tests/             pytest, offline; synthetic data + tmp_path
 .github/workflows/city-rank.yml
