@@ -4,6 +4,9 @@
  * dark mode via prefers-color-scheme. The theme button (theme.js) can override
  * the OS choice by setting <html data-theme="light|dark">. Charts read the same
  * tokens from JS (see city.js) so they always match the page.
+ *
+ * Cards are frosted "glass": translucent, with a backdrop blur of the skyline
+ * drawing behind them (templates/skyline.svg) and a bright rim.
  */
 
 /* ---- Colour tokens: light (default) ---------------------------------------- */
@@ -22,8 +25,16 @@
   --series-1: #2a78d6;      /* main data colour (blue) */
   --series-2: #eb6834;      /* second series (orange), e.g. daily highs */
   --good: #006300;
-  --doodle: rgba(11, 11, 11, 0.13);   /* skyline line art in the background */
-  --radius: 12px;
+  --city-far: #e3e2dd;      /* skyline layers, palest at the back */
+  --city-mid: #cbcac4;
+  --city-near: #a3a29c;
+  --glass: rgba(252, 252, 251, 0.62);        /* card fill, see-through */
+  --glass-inner: rgba(255, 255, 255, 0.45);  /* tiles nested inside a card */
+  --glass-border: rgba(11, 11, 11, 0.08);
+  --glass-rim: rgba(255, 255, 255, 0.95);    /* bright edge highlight */
+  --glass-shadow: rgba(11, 11, 11, 0.12);
+  --radius: 20px;
+  --skyline-height: clamp(220px, 45vh, 420px);
 }
 
 /* ---- Colour tokens: dark ---------------------------------------------------- */
@@ -45,7 +56,14 @@
     --series-1: #3987e5;
     --series-2: #d95926;
     --good: #0ca30c;
-    --doodle: rgba(255, 255, 255, 0.11);
+    --city-far: #151514;
+    --city-mid: #1e1e1d;
+    --city-near: #2b2b29;
+    --glass: rgba(30, 30, 29, 0.55);
+    --glass-inner: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.07);
+    --glass-rim: rgba(255, 255, 255, 0.22);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
   }
 }
 :root[data-theme="dark"] {
@@ -63,7 +81,14 @@
   --series-1: #3987e5;
   --series-2: #d95926;
   --good: #0ca30c;
-  --doodle: rgba(255, 255, 255, 0.11);
+  --city-far: #151514;
+  --city-mid: #1e1e1d;
+  --city-near: #2b2b29;
+  --glass: rgba(30, 30, 29, 0.55);
+  --glass-inner: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.07);
+  --glass-rim: rgba(255, 255, 255, 0.22);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
 }
 
 /* ---- Base ------------------------------------------------------------------- */
@@ -82,21 +107,27 @@ h3 { font-size: 1rem; }
 p { margin: 0.4rem 0; }
 
 /* One centred column with a side gutter that never drops below 16px.
-   The extra bottom padding lets the footer scroll clear of the skyline. */
-.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding-inline: max(16px, 3vw); padding-block: 1rem 150px; }
+   The bottom padding equals the skyline height, so at the end of the page the
+   footer sits above the whole skyline instead of on top of it. */
+.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding-inline: max(16px, 3vw); padding-block: 1rem var(--skyline-height); }
 
-/* ---- Skyline doodle (fixed to the bottom of the window, behind everything) --- */
+/* ---- Skyline silhouette (fixed to the bottom of the window, behind everything) */
 .skyline {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 0;
-  width: 100%; height: 150px;
-  overflow: visible;   /* on very wide screens the drawing grows taller than the box; let it */
-  color: var(--doodle); pointer-events: none;
+  width: 100%; height: var(--skyline-height);
+  pointer-events: none;
 }
-.skyline path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.skyline .far { fill: var(--city-far); }
+.skyline .mid { fill: var(--city-mid); }
+.skyline .near, .skyline .cabins { fill: var(--city-near); }
+.skyline .wheel { fill: none; stroke: var(--city-near); stroke-linecap: round; }
+.skyline .rim { stroke-width: 4; }
+.skyline .spokes { stroke-width: 1.2; }
+.skyline .legs { stroke-width: 5; }
 
 /* ---- Top bar: breadcrumb (city pages) on the left, theme button on the right -- */
 .topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 2.2rem; margin-bottom: 0.5rem; }
-.theme-toggle { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: auto; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: auto; border-radius: 999px; padding: 0.35rem 0.9rem; }
 .theme-toggle[hidden] { display: none; }   /* class display would otherwise beat [hidden] */
 .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 /* Show the moon in light mode (click = go dark) and the sun in dark mode. */
@@ -120,11 +151,46 @@ p { margin: 0.4rem 0; }
 
 /* ---- Cards & sections ------------------------------------------------------- */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem 1.1rem;
   margin-top: 1rem;
+}
+
+/* ---- Frosted glass: cards, stand-alone tiles and the theme button ----------- */
+/* A translucent fill blurs whatever scrolls behind it (mostly the skyline);
+   saturate() keeps the blurred colours from going muddy. */
+.card, .tile, .theme-toggle {
+  position: relative;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 12px 32px -14px var(--glass-shadow);
+}
+/* The bright rim: a 1px gradient ring, strongest at the top-left and
+   bottom-right corners like light catching curved glass. The mask cuts out the
+   middle so only the edge shows. */
+.card::before, .tile::before, .theme-toggle::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+  background: linear-gradient(135deg, var(--glass-rim), transparent 35%, transparent 65%, var(--glass-rim));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+.theme-toggle:hover { background: var(--glass-inner); }
+/* Tiles inside a card are already on glass: a lighter pane, no second blur. */
+.card .tile {
+  background: var(--glass-inner);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: none;
+}
+/* Solid cards when the browser can't blur, or the visitor asked for less transparency. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card, .tile, .theme-toggle { background: var(--surface); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .card, .tile, .theme-toggle { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 1rem; margin-bottom: 0.6rem; }
 
@@ -151,7 +217,7 @@ caption { caption-side: bottom; text-align: left; color: var(--ink-2); font-size
 .city-cell a:hover { text-decoration: underline; }
 .city-cell .prov { color: var(--muted); font-size: 0.8rem; margin-left: 0.3rem; }
 .partial { color: var(--muted); font-size: 0.75rem; display: block; }
-.group-row th { background: var(--track); color: var(--ink); text-transform: none; font-size: 0.9rem; letter-spacing: 0; }
+.group-row th { background: color-mix(in srgb, var(--track) 70%, transparent); color: var(--ink); text-transform: none; font-size: 0.9rem; letter-spacing: 0; }
 
 /* ---- Score bars (single colour; length = score 0-100) ----------------------- */
 .bar-cell { min-width: 150px; }
@@ -170,7 +236,7 @@ caption { caption-side: bottom; text-align: left; color: var(--ink-2); font-size
 
 /* ---- Stat tiles ------------------------------------------------------------- */
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
-.tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.8rem 0.95rem; }
+.tile { border-radius: 16px; padding: 0.8rem 0.95rem; }   /* glass styles above */
 .tile .label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); }
 .tile .value { font-size: 1.6rem; font-weight: 700; margin-top: 0.15rem; }
 .tile .note { color: var(--ink-2); font-size: 0.85rem; }
