@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T16:38:02Z",
+  "generated_at": "2026-10-26T21:06:29Z",
   "sources": [
     {
       "source": "weather",
@@ -8,8 +8,8 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-26T16:38:02Z",
-      "seconds": 2.2
+      "fetched_at": "2026-10-26T21:06:29Z",
+      "seconds": 1.0
     },
     {
       "source": "climate",
@@ -67,10 +67,10 @@
       "title": "TomTom Traffic Flow API",
       "url": "https://developer.tomtom.com/traffic-api/documentation/traffic-flow/flow-segment-data",
       "state": "updated",
-      "rows": 14,
-      "cities": 7,
-      "fetched_at": "2026-10-26T16:38:02Z",
-      "seconds": 0.9
+      "rows": 40,
+      "cities": 20,
+      "fetched_at": "2026-10-26T21:06:29Z",
+      "seconds": 5.5
     }
   ]
 }
