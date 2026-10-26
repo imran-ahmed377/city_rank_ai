@@ -219,11 +219,11 @@ date,city,overall,rank
 2026-10-25,victoria,59.11,13.0
 2026-10-25,windsor,63.07,8.0
 2026-10-25,winnipeg,50.83,19.0
-2026-10-26,calgary,75.94,1.0
-2026-10-26,edmonton,63.47,9.0
+2026-10-26,calgary,75.66,1.0
+2026-10-26,edmonton,63.37,9.0
 2026-10-26,halifax,61.05,12.0
 2026-10-26,hamilton,69.06,3.0
-2026-10-26,kelowna,38.5,20.0
+2026-10-26,kelowna,38.32,20.0
 2026-10-26,kitchener-waterloo,60.15,13.0
 2026-10-26,london,54.82,17.0
 2026-10-26,montreal,56.81,16.0
@@ -236,6 +236,6 @@ date,city,overall,rank
 2026-10-26,st-catharines-niagara,65.49,6.0
 2026-10-26,toronto,64.4,8.0
 2026-10-26,vancouver,48.38,19.0
-2026-10-26,victoria,59.11,14.0
+2026-10-26,victoria,59.5,14.0
 2026-10-26,windsor,63.13,10.0
 2026-10-26,winnipeg,50.93,18.0
