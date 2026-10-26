@@ -163,6 +163,8 @@ The site is static, generated with Jinja2 into `docs/`, and served by GitHub Pag
 
 **Chart rules**
 - Charts follow the light/dark color tokens in `style.css`.
+- A button at the top of every page switches light/dark. The choice is saved in localStorage; with no saved choice the site follows the OS setting.
+- A decorative line-art skyline (CN Tower in the centre) sits fixed at the bottom of the window, in the faint `--doodle` colour.
 - Every chart has a single y-axis.
 - Every chart has a table or text equivalent on the page.
 - Each page embeds only its own data, so pages also work when opened from disk.

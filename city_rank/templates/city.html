@@ -6,8 +6,9 @@
 {% block description %}{{ city.name }} ranks {{ rank|ordinal_rank }} of {{ total_cities }} Canadian metro areas on safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
 {% block head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>{% endblock %}
 
+{% block topbar %}<a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a>{% endblock %}
+
 {% block content %}
-<a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a>
 <header class="site-header">
   <div class="kicker">{{ city.cma_name }} metro area · {{ city.province }}</div>
   <h1>{{ city.name }}</h1>

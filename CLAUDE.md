@@ -46,7 +46,7 @@ city_rank/
   pipeline.py      CLI + orchestration (refresh intervals, retry missing cities, run_status.json)
   dashboard.py     builds template contexts; render_site() writes docs/
   templates/       Jinja2: base.html, index.html, city.html
-  static/          style.css (color tokens, light/dark), rankings.js (sliders), city.js (Plotly charts)
+  static/          style.css (color tokens, light/dark), theme.js (theme button), rankings.js (sliders), city.js (Plotly charts)
 tests/             pytest, offline; synthetic data + tmp_path
 .github/workflows/city-rank.yml
 ```

@@ -1,8 +1,9 @@
 /* City Rank - shared stylesheet for every page.
  *
  * Colours are defined once as CSS custom properties ("tokens") and swapped for
- * dark mode via prefers-color-scheme. Charts read the same tokens from JS
- * (see city.js) so they always match the page.
+ * dark mode via prefers-color-scheme. The theme button (theme.js) can override
+ * the OS choice by setting <html data-theme="light|dark">. Charts read the same
+ * tokens from JS (see city.js) so they always match the page.
  */
 
 /* ---- Colour tokens: light (default) ---------------------------------------- */
@@ -21,12 +22,15 @@
   --series-1: #2a78d6;      /* main data colour (blue) */
   --series-2: #eb6834;      /* second series (orange), e.g. daily highs */
   --good: #006300;
+  --doodle: rgba(11, 11, 11, 0.13);   /* skyline line art in the background */
   --radius: 12px;
 }
 
 /* ---- Colour tokens: dark ---------------------------------------------------- */
+/* Used when the OS is in dark mode (unless the visitor picked light), or when
+   the visitor picked dark. The two blocks must stay identical. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
     --page: #0d0d0d;
     --surface: #1a1a19;
@@ -41,7 +45,25 @@
     --series-1: #3987e5;
     --series-2: #d95926;
     --good: #0ca30c;
+    --doodle: rgba(255, 255, 255, 0.11);
   }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #ffffff;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --track: #2c2c2a;
+  --link: #86b6ef;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --good: #0ca30c;
+  --doodle: rgba(255, 255, 255, 0.11);
 }
 
 /* ---- Base ------------------------------------------------------------------- */
@@ -59,8 +81,32 @@ h2 { font-size: 1.25rem; margin-bottom: 0.25rem; }
 h3 { font-size: 1rem; }
 p { margin: 0.4rem 0; }
 
-/* One centred column with a side gutter that never drops below 16px. */
-.wrap { max-width: 1120px; margin: 0 auto; padding-inline: max(16px, 3vw); padding-block: 1.5rem 3rem; }
+/* One centred column with a side gutter that never drops below 16px.
+   The extra bottom padding lets the footer scroll clear of the skyline. */
+.wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding-inline: max(16px, 3vw); padding-block: 1rem 150px; }
+
+/* ---- Skyline doodle (fixed to the bottom of the window, behind everything) --- */
+.skyline {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 0;
+  width: 100%; height: 150px;
+  overflow: visible;   /* on very wide screens the drawing grows taller than the box; let it */
+  color: var(--doodle); pointer-events: none;
+}
+.skyline path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+
+/* ---- Top bar: breadcrumb (city pages) on the left, theme button on the right -- */
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 2.2rem; margin-bottom: 0.5rem; }
+.theme-toggle { display: inline-flex; align-items: center; gap: 0.4rem; margin-left: auto; }
+.theme-toggle[hidden] { display: none; }   /* class display would otherwise beat [hidden] */
+.theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+/* Show the moon in light mode (click = go dark) and the sun in dark mode. */
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
+  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+}
 
 .muted { color: var(--ink-2); }
 .small { font-size: 0.85rem; }
@@ -70,7 +116,7 @@ p { margin: 0.4rem 0; }
 .site-header { padding-block: 0.5rem 1rem; }
 .site-header .kicker { color: var(--ink-2); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; }
 .site-header .lede { color: var(--ink-2); max-width: 70ch; }
-.breadcrumb { font-size: 0.9rem; margin-bottom: 0.75rem; display: inline-block; }
+.breadcrumb { font-size: 0.9rem; display: inline-block; }
 
 /* ---- Cards & sections ------------------------------------------------------- */
 .card {

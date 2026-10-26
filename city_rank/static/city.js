@@ -118,7 +118,7 @@
     ], layout, plotConfig);
   }
 
-  // ---- Draw everything (and redraw when the OS switches light/dark) ----------------
+  // ---- Draw everything (and redraw when the OS or the theme button switches light/dark)
   function drawAll() {
     if (typeof Plotly === "undefined") return; // CDN blocked: tables still carry the data
     const t = theme();
@@ -131,4 +131,5 @@
 
   drawAll();
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawAll);
+  document.addEventListener("themechange", drawAll);   // fired by theme.js
 })();
