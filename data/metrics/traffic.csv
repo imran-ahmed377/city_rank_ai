@@ -1,0 +1,15 @@
+city,metric,value,period,source,fetched_at
+calgary,congestion_pct,15.3,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+calgary,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+edmonton,congestion_pct,5.3,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+edmonton,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+kelowna,congestion_pct,12.6,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+kelowna,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+regina,congestion_pct,0.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+regina,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+saskatoon,congestion_pct,0.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+saskatoon,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+vancouver,congestion_pct,34.7,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+vancouver,traffic_samples,9.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+victoria,congestion_pct,16.3,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z
+victoria,traffic_samples,8.0,2026-10-26 to 2026-10-26,traffic,2026-10-26T15:51:36Z

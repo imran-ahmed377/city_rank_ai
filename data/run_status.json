@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T04:23:55Z",
+  "generated_at": "2026-10-26T15:51:36Z",
   "sources": [
     {
       "source": "weather",
@@ -8,22 +8,28 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-26T04:23:55Z",
-      "seconds": 3.4
+      "fetched_at": "2026-10-26T15:51:36Z",
+      "seconds": 0.8
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "cached",
-      "fetched_at": "2026-10-25T18:16:26Z"
+      "state": "updated",
+      "rows": 120,
+      "cities": 20,
+      "fetched_at": "2026-10-26T15:51:36Z",
+      "seconds": 5.5
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "cached",
-      "fetched_at": "2026-10-25T23:04:25Z"
+      "state": "updated",
+      "rows": 40,
+      "cities": 20,
+      "fetched_at": "2026-10-26T15:51:36Z",
+      "seconds": 2.6
     },
     {
       "source": "crime",
@@ -66,10 +72,11 @@
       "source": "traffic",
       "title": "TomTom Traffic Flow API",
       "url": "https://developer.tomtom.com/traffic-api/documentation/traffic-flow/flow-segment-data",
-      "state": "empty",
-      "rows": 0,
-      "fetched_at": null,
-      "seconds": 0.0
+      "state": "updated",
+      "rows": 14,
+      "cities": 7,
+      "fetched_at": "2026-10-26T15:51:36Z",
+      "seconds": 2.8
     }
   ]
 }
