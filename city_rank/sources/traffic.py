@@ -6,15 +6,16 @@ How it works
    points SAMPLE_RADIUS_KM away). TomTom snaps each point to the nearest major
    road segment and reports its current speed and its free-flow speed.
 2. A city is only sampled when it is currently in its *local* weekday rush hour
-   (07-10 or 16-19). The workflow runs four times a day (12, 15, 21, 00 UTC) so
-   every Canadian timezone gets a morning and an evening sample.
+   (07-10 or 16-19). The workflow runs every hour (GitHub often delays scheduled
+   runs by hours, so fixed times would miss rush hour), and each run samples
+   whichever cities are in rush hour at that moment.
 3. Every sample is appended to history/traffic_samples.csv (kept 120 days).
 4. The ranked metric is the 30-day average of
        congestion % = (1 - current_speed / free_flow_speed) * 100
    i.e. "traffic moves X% slower than when roads are empty".
 
-Request budget: 20 cities x 9 points x ~2 samples/day ≈ 360 requests/day,
-well inside TomTom's free 2,500/day.
+Request budget: a city is in rush hour for 6 hours per weekday, so at most
+20 cities x 6 runs x 9 points ≈ 1,080 requests/day - inside TomTom's free 2,500/day.
 
 The key is read from the TOMTOM_API_KEY environment variable (a GitHub secret in
 CI). Without a key, no new samples are taken but metrics are still computed from

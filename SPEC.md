@@ -4,7 +4,7 @@
 
 Rank the 20 largest Canadian metro areas on **living standards** using only
 public data, and publish the result as a static website that updates itself
-several times a day through GitHub Actions.
+every hour through GitHub Actions.
 
 The ranking must be:
 
@@ -38,7 +38,7 @@ Default weights are importance levels from 0 to 10. The percentage is each weigh
 | Housing cost | 4 (20%) | Average 2-bedroom rent (↓), Rent change % per year (↓) | CMHC via StatCan 34-10-0133-01 | yearly (October survey) | weekly check |
 | Climate | 3 (15%) | Days below −20 °C (↓), Days above 30 °C (↓), Snowfall (↓), Wet days ≥1 mm (↓), Sunshine hours (↑) | Open-Meteo archive, past 365 days | daily | every 12 h |
 | Air quality | 2 (10%) | PM2.5 90-day mean (↓) | Open-Meteo Air Quality API | hourly | every 6 h |
-| Traffic | 2 (10%) | Rush-hour congestion %, 30-day mean (↓) | TomTom Traffic Flow API (free key) | live | every run (4× per day) |
+| Traffic | 2 (10%) | Rush-hour congestion %, 30-day mean (↓) | TomTom Traffic Flow API (free key) | live | every run (hourly) |
 | Amenities | 1 (5%) | Parks, hospitals/clinics, schools, transit stops within 10 km of downtown (↑) | OpenStreetMap via Overpass | live | weekly |
 
 **Info-only metrics** are shown on city pages but not scored:
@@ -55,11 +55,11 @@ Default weights are importance levels from 0 to 10. The percentage is each weigh
 
 - **Sample points:** 9 per city, the downtown centre plus 8 compass points 4 km away. TomTom snaps each point to the nearest major road segment.
 - **When:** a city is sampled only during its local weekday rush hours, 07:00–09:59 and 16:00–18:59.
-- **Schedule:** the workflow runs at 12:00, 15:00, 21:00 and 00:00 UTC. That gives every Canadian time zone one morning and one evening sample, in both daylight-saving and standard time.
+- **Schedule:** the workflow runs every hour. GitHub often starts scheduled runs 2–4 hours late, so fixed times can't be relied on; with hourly runs, each city is sampled several times inside each of its rush-hour windows.
 - **Per reading:** congestion % = (1 − current speed ÷ free-flow speed) × 100, clipped at 0.
 - **Excluded readings:** closed roads and readings with TomTom confidence below 0.5.
 - **The metric:** the mean of all valid readings over the last 30 days. Raw samples are kept for 120 days.
-- **Budget:** about 360 requests a day, against TomTom's free limit of 2,500.
+- **Budget:** at most about 1,080 requests a day (20 cities × 6 rush-hour runs × 9 points), against TomTom's free limit of 2,500.
 
 ## 4. Scoring
 
@@ -171,14 +171,14 @@ The site is static, generated with Jinja2 into `docs/`, and served by GitHub Pag
 
 The workflow is `.github/workflows/city-rank.yml`.
 
-**Triggers:** a push to `main`, four daily cron runs, and manual dispatch.
+**Triggers:** a push to `main`, an hourly cron run, and manual dispatch.
 
 **Steps:**
 1. Install dependencies.
 2. Run `pytest`.
 3. Restore `data/` from `bot/data`.
 4. Run the pipeline.
-5. Push `data/` and `docs/` to `bot/data`.
+5. Push `data/` to `bot/data`.
 6. Deploy `docs/` to Pages.
 
 Runs are serialized, so two runs never write to the data branch at the same time.

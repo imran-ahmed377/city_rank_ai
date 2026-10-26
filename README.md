@@ -10,7 +10,7 @@ Ranks the **20 largest Canadian metro areas** on living standards:
 - traffic
 - amenities
 
-All data comes from public APIs. A GitHub Actions workflow refreshes the data and republishes the dashboard four times a day.
+All data comes from public APIs. A GitHub Actions workflow refreshes the data and republishes the dashboard every hour.
 
 **Live dashboard:** https://imran-ahmed377.github.io/city_rank_ai/
 
@@ -60,7 +60,7 @@ Useful options:
 2. **TomTom key:**
    1. Create a free key at https://developer.tomtom.com/.
    2. Add it in Settings → Secrets and variables → Actions → **New repository secret**, named `TOMTOM_API_KEY`.
-3. **Workflow:** [.github/workflows/city-rank.yml](.github/workflows/city-rank.yml) runs at 12:00, 15:00, 21:00 and 00:00 UTC, on every push to `main`, and manually from the Actions tab.
+3. **Workflow:** [.github/workflows/city-rank.yml](.github/workflows/city-rank.yml) runs every hour, on every push to `main`, and manually from the Actions tab.
 
 Fetched data and history are stored on the `bot/data` branch, so `main` contains only code.
 

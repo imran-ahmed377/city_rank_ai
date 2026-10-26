@@ -4,7 +4,7 @@
 #   1. restore data/ from the bot/data branch (so history keeps accumulating)
 #   2. run the tests
 #   3. run `python -m city_rank` (fetch -> score -> render docs/)
-#   4. push data/ + docs/ back to the bot/data branch
+#   4. push data/ back to the bot/data branch
 #   5. deploy docs/ to GitHub Pages
 #
 # Secrets: TOMTOM_API_KEY (Settings -> Secrets and variables -> Actions).
@@ -17,16 +17,12 @@ on:
     branches:
       - main
   schedule:
-    # Four runs a day so every Canadian time zone gets a weekday morning and an
-    # evening rush-hour traffic sample (see city_rank/sources/traffic.py):
-    #   12:00 UTC  Atlantic/Eastern/Central morning
-    #   15:00 UTC  Saskatchewan/Mountain/Pacific morning
-    #   21:00 UTC  Atlantic/Eastern/Central evening
-    #   00:00 UTC  Saskatchewan/Mountain/Pacific evening
-    - cron: "0 12 * * *"
-    - cron: "0 15 * * *"
-    - cron: "0 21 * * *"
-    - cron: "0 0 * * *"
+    # Hourly. GitHub often starts scheduled runs 2-4 hours late, so fixed
+    # "rush-hour" times are unreliable. Running every hour guarantees that each
+    # city is caught during its local weekday rush hours (traffic.py decides which
+    # cities to sample on each run). Minute 23 avoids the busy top of the hour.
+    # Most runs take under a minute because slow-changing sources are cached.
+    - cron: "23 * * * *"
   workflow_dispatch:
 
 # Runs queue up instead of overlapping, because each one pushes to bot/data.
@@ -90,7 +86,7 @@ jobs:
           set -o pipefail
           python -m city_rank 2>&1 | tee workflow.log
 
-      - name: Publish data and site to the data branch
+      - name: Publish data to the data branch
         run: |
           set -e
           git config --global user.name "github-actions"
@@ -103,10 +99,11 @@ jobs:
             git worktree add --orphan -b "$DATA_BRANCH" ../data-worktree
           fi
 
-          # Replace the branch contents with this run's data/ and docs/.
+          # Replace the branch contents with this run's data/. The site (docs/) is
+          # not stored here: it is rebuilt every run and deployed to Pages directly,
+          # and committing it hourly would bloat the branch history.
           find ../data-worktree -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
           rsync -a data/ ../data-worktree/data/
-          rsync -a docs/ ../data-worktree/docs/
 
           cd ../data-worktree
           git add -A

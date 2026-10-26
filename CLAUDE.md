@@ -8,7 +8,7 @@ Guidance for Claude Code (and humans) working in this repository.
 safety, jobs, housing cost, climate, air quality, traffic and amenities. All
 data comes from public APIs.
 
-A GitHub Actions workflow runs 4× a day. Each run fetches data, re-scores the
+A GitHub Actions workflow runs every hour. Each run fetches data, re-scores the
 cities and publishes a static site to GitHub Pages.
 
 - `SPEC.md` is the authoritative description of the behaviour.
@@ -88,4 +88,5 @@ Generated folders are git-ignored on `main`:
 - **Oshawa has no Crime Severity Index** (Durham Regional Police). Its missing Safety score is expected.
 - **The main Overpass server often returns 504.** `amenities.py` falls back to the Kumi mirror, and the pipeline retries only the missing cities on later runs.
 - **Traffic only samples during local weekday rush hours.** A manual run at midday adds no samples unless `TRAFFIC_FORCE=1`.
-- **The workflow cron times are tied to the rush-hour windows** in `traffic.py`. Change them together.
+- **The workflow runs hourly on purpose.** GitHub starts scheduled runs 2–4 hours late, so fixed rush-hour times missed most cities. Don't reduce the schedule without a different way to catch every city's rush hour.
+- **`bot/data` holds only `data/`.** The site is rebuilt each run and deployed straight to Pages.

@@ -39,12 +39,13 @@ This file tracks what has been built and what comes next. Tick items off as they
 - [x] Light and dark mode. Every chart has a table equivalent.
 
 ### Automation and fixes
-- [x] Workflow runs 4× a day (traffic rush-hour coverage), runs tests first, and restores `data/` from `bot/data`.
+- [x] Workflow runs tests first and restores `data/` from `bot/data`.
   - This fixes a bug in v1, where the observation history was reset on every run.
 - [x] pytest suite (offline, no network).
 
 ## Phase 2: Next up
 
+- [x] Switched the workflow to hourly runs (2026-10-26). GitHub was starting scheduled runs 2–4 hours late, so Eastern and Atlantic cities never got a rush-hour traffic sample. `bot/data` now stores only `data/`.
 - [ ] **Add the `TOMTOM_API_KEY` secret** in GitHub (Settings → Secrets and variables → Actions). Until then, traffic shows "no data".
 - [ ] After the first successful run, delete the old `bot/weather-data` branch. It's no longer used.
 - [ ] Check the live site after 1–2 days. The rank history and traffic charts need a few runs before they fill in.
@@ -75,4 +76,5 @@ This file tracks what has been built and what comes next. Tick items off as they
 | 2026-10-14 | Data on the `bot/data` branch | Keeps `main` history clean; the workflow restores it on each run. |
 | 2026-10-14 | Rankings page plus one page per city | Keeps pages small; per-city weather charts live on the city pages. |
 | 2026-10-14 | Min-max scaling | Easy to explain ("best = 100, worst = 0"). Can be revisited if outliers dominate. |
+| 2026-10-26 | Hourly workflow runs | Scheduled runs started 2–4 h late and missed rush hour. Hourly runs catch every city; Actions minutes are free for public repos. |
 | 2026-10-14 | No income metric | The StatCan CMA income table covers only 8 of the 20 cities. |
