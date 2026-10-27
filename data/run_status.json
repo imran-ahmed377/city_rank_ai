@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T06:26:26Z",
+  "generated_at": "2026-10-27T13:24:13Z",
   "sources": [
     {
       "source": "weather",
@@ -8,25 +8,25 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-27T06:26:26Z",
-      "seconds": 1.7
+      "fetched_at": "2026-10-27T13:24:13Z",
+      "seconds": 0.6
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 120,
-      "cities": 20,
-      "fetched_at": "2026-10-27T06:26:26Z",
-      "seconds": 6.2
+      "state": "cached",
+      "fetched_at": "2026-10-27T06:26:26Z"
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "cached",
-      "fetched_at": "2026-10-27T00:36:56Z"
+      "state": "updated",
+      "rows": 40,
+      "cities": 20,
+      "fetched_at": "2026-10-27T13:24:13Z",
+      "seconds": 2.3
     },
     {
       "source": "crime",
@@ -72,8 +72,8 @@
       "state": "updated",
       "rows": 40,
       "cities": 20,
-      "fetched_at": "2026-10-27T06:26:26Z",
-      "seconds": 0.0
+      "fetched_at": "2026-10-27T13:24:13Z",
+      "seconds": 3.1
     }
   ]
 }
