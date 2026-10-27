@@ -494,3 +494,12 @@ sampled_at_utc,city,point,current_speed_kmh,free_flow_speed_kmh,confidence,road_
 2026-10-27T13:24:16Z,winnipeg,6,37,46,1.0,False
 2026-10-27T13:24:16Z,winnipeg,7,41,51,1.0,False
 2026-10-27T13:24:16Z,winnipeg,8,23,43,1.0,False
+2026-10-27T19:30:24Z,halifax,0,11,22,0.9844,False
+2026-10-27T19:30:24Z,halifax,1,39,49,1.0,False
+2026-10-27T19:30:24Z,halifax,2,88,88,1.0,False
+2026-10-27T19:30:24Z,halifax,3,84,84,1.0,False
+2026-10-27T19:30:24Z,halifax,4,58,58,1.0,False
+2026-10-27T19:30:24Z,halifax,5,59,59,1.0,False
+2026-10-27T19:30:24Z,halifax,6,23,49,1.0,False
+2026-10-27T19:30:24Z,halifax,7,81,81,1.0,False
+2026-10-27T19:30:24Z,halifax,8,30,42,0.962816,False
