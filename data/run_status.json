@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-29T16:59:26Z",
+  "generated_at": "2026-10-29T21:53:02Z",
   "sources": [
     {
       "source": "weather",
@@ -8,38 +8,31 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 0.5
+      "fetched_at": "2026-10-29T21:53:02Z",
+      "seconds": 2.3
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 120,
-      "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 4.3
+      "state": "cached",
+      "fetched_at": "2026-10-29T16:59:26Z"
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "updated",
-      "rows": 40,
-      "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 2.4
+      "state": "cached",
+      "fetched_at": "2026-10-29T16:59:26Z"
     },
     {
       "source": "crime",
       "title": "Statistics Canada – Crime Severity Index (35-10-0026-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3510002601",
-      "state": "updated",
-      "rows": 38,
-      "cities": 19,
+      "state": "cached",
+      "rows": 0,
       "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 0.5
+      "seconds": 0.0
     },
     {
       "source": "jobs",
@@ -52,21 +45,15 @@
       "source": "population",
       "title": "Statistics Canada – Population estimates (17-10-0148-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014801",
-      "state": "updated",
-      "rows": 40,
-      "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 0.4
+      "state": "cached",
+      "fetched_at": "2026-10-29T16:59:26Z"
     },
     {
       "source": "housing",
       "title": "CMHC average rents via Statistics Canada (34-10-0133-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410013301",
-      "state": "updated",
-      "rows": 40,
-      "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 0.3
+      "state": "cached",
+      "fetched_at": "2026-10-29T16:59:26Z"
     },
     {
       "source": "amenities",
@@ -82,8 +69,8 @@
       "state": "updated",
       "rows": 40,
       "cities": 20,
-      "fetched_at": "2026-10-29T16:59:26Z",
-      "seconds": 0.8
+      "fetched_at": "2026-10-29T21:53:02Z",
+      "seconds": 2.7
     }
   ]
 }
