@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T08:47:31Z",
+  "generated_at": "2026-10-30T16:02:33Z",
   "sources": [
     {
       "source": "weather",
@@ -8,18 +8,15 @@
       "state": "updated",
       "rows": 100,
       "cities": 20,
-      "fetched_at": "2026-10-30T08:47:31Z",
-      "seconds": 1.2
+      "fetched_at": "2026-10-30T16:02:33Z",
+      "seconds": 1.8
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 120,
-      "cities": 20,
-      "fetched_at": "2026-10-30T08:47:31Z",
-      "seconds": 6.9
+      "state": "cached",
+      "fetched_at": "2026-10-30T08:47:31Z"
     },
     {
       "source": "air_quality",
@@ -28,8 +25,8 @@
       "state": "updated",
       "rows": 40,
       "cities": 20,
-      "fetched_at": "2026-10-30T08:47:31Z",
-      "seconds": 3.3
+      "fetched_at": "2026-10-30T16:02:33Z",
+      "seconds": 3.4
     },
     {
       "source": "crime",
@@ -44,8 +41,11 @@
       "source": "jobs",
       "title": "Statistics Canada – Labour Force Survey (14-10-0459-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410045901",
-      "state": "cached",
-      "fetched_at": "2026-10-29T10:13:39Z"
+      "state": "updated",
+      "rows": 40,
+      "cities": 20,
+      "fetched_at": "2026-10-30T16:02:33Z",
+      "seconds": 0.8
     },
     {
       "source": "population",
@@ -65,11 +65,8 @@
       "source": "amenities",
       "title": "OpenStreetMap via Overpass API",
       "url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
-      "state": "updated",
-      "rows": 60,
-      "cities": 15,
-      "fetched_at": "2026-10-30T08:47:31Z",
-      "seconds": 2117.3
+      "state": "cached",
+      "fetched_at": "2026-10-30T08:47:31Z"
     },
     {
       "source": "traffic",
@@ -78,8 +75,8 @@
       "state": "updated",
       "rows": 40,
       "cities": 20,
-      "fetched_at": "2026-10-30T08:47:31Z",
-      "seconds": 0.0
+      "fetched_at": "2026-10-30T16:02:33Z",
+      "seconds": 1.8
     }
   ]
 }
