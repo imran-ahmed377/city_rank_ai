@@ -70,3 +70,14 @@ Fetched data and history are stored on the `bot/data` branch, so `main` contains
 - [SPEC.md](SPEC.md): what the system does and how scores are calculated.
 - [PLAN.md](PLAN.md): progress and roadmap.
 - [CLAUDE.md](CLAUDE.md): developer guide (architecture, conventions, gotchas).
+
+## License
+
+The code is released under the [MIT License](LICENSE). Copyright (c) 2026 Imran Ahmed.
+
+The data shown on the site is not covered by this licence. It belongs to its providers and is used under their terms:
+
+- Statistics Canada: [Open Licence](https://www.statcan.gc.ca/en/reference/licence)
+- Open-Meteo: [CC BY 4.0](https://open-meteo.com/en/license)
+- OpenStreetMap: © OpenStreetMap contributors, [ODbL](https://www.openstreetmap.org/copyright)
+- TomTom: [TomTom developer terms](https://developer.tomtom.com/terms-and-conditions)

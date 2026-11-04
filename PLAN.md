@@ -53,7 +53,7 @@ This file tracks what has been built and what comes next. Tick items off as they
 - [x] Data-licence attribution in the site footer (2026-11-04).
 - [ ] **Reliable rush-hour sampling.** GitHub runs the hourly schedule only every ~5–7 hours, so most cities get 0–2 traffic samples a day. Options: an external trigger (e.g. cron-job.org calling the workflow_dispatch API), or a long-running sampler job. Waiting on the owner's decision.
 - [ ] **GTA municipalities.** Decide whether to split Toronto into GTA cities (data availability differs by source; see the 2026-11-04 discussion). Waiting on the owner's decision.
-- [ ] **Licence.** Choose a code licence (MIT suggested). Waiting on the owner's decision.
+- [x] **Licence.** MIT, with a README note that the data keeps its providers' licences (2026-11-04).
 - [ ] After the first successful run, delete the old `bot/weather-data` branch. It's no longer used.
 - [ ] Check the live site after 1–2 days. The rank history and traffic charts need a few runs before they fill in.
 - [ ] Add a map view on the home page: city markers colored by overall score.
