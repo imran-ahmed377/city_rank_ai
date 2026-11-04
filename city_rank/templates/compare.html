@@ -1,0 +1,61 @@
+{# Compare page: three city pickers side by side (Apple "compare models" style) and
+   every section of the city pages lined up in three columns underneath.
+   The page is a skeleton: static/compare.js fills every section from the JSON
+   embedded at the bottom, so switching cities is instant and needs no reload.
+   The chosen cities are kept in the URL (#toronto,calgary,halifax) for sharing. #}
+{% extends "base.html" %}
+
+{% block title %}Compare cities – {{ site_title }}{% endblock %}
+{% block description %}Compare any three of Canada's {{ total_cities }} largest metro areas side by side: scores, safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
+{% block head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>{% endblock %}
+
+{% block topbar %}
+<nav class="topnav"><a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a></nav>
+{% endblock %}
+
+{% block content %}
+<header class="site-header">
+  <div class="kicker">Side by side</div>
+  <h1>Compare cities</h1>
+  <p class="lede">Pick any three metro areas to compare every score, statistic and chart. “Best” marks the strongest of the three on each measure.</p>
+</header>
+
+<noscript><div class="card"><p>The comparison needs JavaScript. Each city's full details are on its own page, linked from the <a href="{{ root }}/index.html">rankings</a>.</p></div></noscript>
+
+{# ---- Sticky row of city pickers ------------------------------------------- #}
+<div class="compare-head card" id="compare-head">
+  <div class="compare-grid">
+    {% for i in range(3) %}
+    <div class="compare-pick">
+      <label class="visually-hidden" for="pick-{{ i }}">City {{ i + 1 }}</label>
+      <select id="pick-{{ i }}" class="city-select" data-column="{{ i }}"></select>
+      <div class="pick-meta" id="meta-{{ i }}"></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{# ---- Sections (filled by compare.js) ---------------------------------------- #}
+{% set sections = [
+  ("overview", "Overview"),
+  ("categories", "Category scores"),
+  ("now", "Right now"),
+  ("forecast", "7-day forecast"),
+  ("climate", "Climate: past 12 months"),
+  ("rank", "Rank over time"),
+  ("traffic", "Rush-hour traffic"),
+  ("metrics", "All metrics"),
+] %}
+{% for key, title in sections %}
+<section class="card compare-section" aria-labelledby="cmp-{{ key }}-title">
+  <h2 id="cmp-{{ key }}-title">{{ title }}</h2>
+  <div class="compare-grid" id="cmp-{{ key }}"></div>
+</section>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script id="compare-data" type="application/json">{{ compare|tojson }}</script>
+<script src="{{ root }}/assets/charts.js" defer></script>
+<script src="{{ root }}/assets/compare.js" defer></script>
+{% endblock %}

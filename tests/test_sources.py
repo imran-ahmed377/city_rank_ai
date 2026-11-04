@@ -158,3 +158,46 @@ def test_every_catalog_metric_has_a_registered_source():
 
 def test_city_slugs_are_unique():
     assert len({c.slug for c in CITIES}) == len(CITIES) == 20
+
+
+# --------------------------------------------------------------------------- Traffic history (local time)
+def _samples(rows):
+    """Traffic samples from (utc timestamp, city, current speed) tuples; free flow 100 km/h."""
+    return pd.DataFrame(
+        [{"sampled_at_utc": t, "city": c, "point": i, "current_speed_kmh": v, "free_flow_speed_kmh": 100,
+          "confidence": 1.0, "road_closure": False} for i, (t, c, v) in enumerate(rows)]
+    )
+
+
+def test_local_time_puts_evening_samples_on_the_right_day():
+    # 00:30 UTC Tuesday = 17:30 Monday in Vancouver (evening rush, local Monday).
+    df = traffic.with_local_time(traffic.valid_readings(_samples([("2026-10-27T00:30:00Z", "vancouver", 60)])))
+    row = df.iloc[0]
+    assert (row["local_date"], row["weekday"], row["rush"]) == ("2026-10-26", "Monday", "evening")
+
+
+def test_daily_and_weekday_summaries_split_morning_and_evening():
+    samples = _samples([
+        ("2026-10-26T12:00:00Z", "toronto", 80),   # Mon 08:00 EDT -> morning, 20% slower
+        ("2026-10-26T21:00:00Z", "toronto", 60),   # Mon 17:00 EDT -> evening, 40% slower
+        ("2026-11-02T13:00:00Z", "toronto", 70),   # next Mon 08:00 EST -> morning, 30% slower
+    ])
+    daily = traffic.daily_congestion(samples)
+    assert list(daily["date"]) == ["2026-10-26", "2026-11-02"]
+    assert list(daily["weekday"]) == ["Monday", "Monday"]
+    first = daily.iloc[0]
+    assert first["morning_pct"] == pytest.approx(20) and first["evening_pct"] == pytest.approx(40)
+
+    weekly = traffic.weekday_congestion(samples)
+    monday = weekly[weekly["weekday"] == "Monday"].iloc[0]
+    assert monday["morning_pct"] == pytest.approx(25)   # mean of 20 and 30
+    assert monday["samples"] == 3
+
+
+def test_traffic_history_is_never_pruned(store, monkeypatch):
+    # An old sample must survive a new run (the history keeps accumulating).
+    store.append_history("traffic_samples", _samples([("2025-01-06T13:00:00Z", "toronto", 50)]),
+                         key=["sampled_at_utc", "city", "point"])
+    monkeypatch.setenv("TOMTOM_API_KEY", "")
+    traffic.fetch(None, CITIES, store)
+    assert len(store.load_history("traffic_samples")) == 1

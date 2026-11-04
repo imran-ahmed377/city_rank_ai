@@ -6,7 +6,12 @@
 {% block description %}{{ city.name }} ranks {{ rank|ordinal_rank }} of {{ total_cities }} Canadian metro areas on safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
 {% block head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>{% endblock %}
 
-{% block topbar %}<a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a>{% endblock %}
+{% block topbar %}
+<nav class="topnav">
+  <a class="breadcrumb" href="{{ root }}/index.html">← All rankings</a>
+  <a class="nav-link" href="{{ root }}/compare.html#{{ city.slug }}">Compare {{ city.name }} with other cities →</a>
+</nav>
+{% endblock %}
 
 {% block content %}
 <header class="site-header">
@@ -109,8 +114,42 @@
 {# ---- Traffic ----------------------------------------------------------------- #}
 <section class="card" aria-labelledby="traffic-title">
   <h2 id="traffic-title">Rush-hour congestion</h2>
-  <p class="muted small">How much slower traffic moves than on empty roads, sampled on weekdays at 07–10 and 16–19 local time (TomTom).</p>
-  <div id="chart-traffic" class="chart" data-empty="No traffic samples yet. They are collected during weekday rush hours once a TomTom API key is configured."></div>
+  <p class="muted small">How much slower traffic moves than on empty roads, measured by TomTom on weekdays during the
+    morning (07–10) and evening (16–19) rush, local time. Every reading is kept, so this history keeps growing.
+    {% if traffic.first %}Data since {{ traffic.first }} ({{ traffic.days }} day{{ "s" if traffic.days != 1 }}).{% endif %}
+    The ranking itself uses the last 30 days.</p>
+  <h3>Every sampled day</h3>
+  <div id="chart-traffic" class="chart" data-empty="No traffic samples yet. They are collected during weekday rush hours."></div>
+  <h3>Average by weekday</h3>
+  <div id="chart-traffic-weekday" class="chart" data-empty="No traffic samples yet."></div>
+  {% if traffic.rows %}
+  <details>
+    <summary>Show weekday averages</summary>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Weekday</th><th scope="col" class="num">Morning rush</th><th scope="col" class="num">Evening rush</th><th scope="col" class="num">Readings</th></tr></thead>
+        <tbody>
+          {% for r in traffic.weekday_rows %}
+          <tr><td>{{ r.weekday }}</td><td class="num">{{ r.morning }}</td><td class="num">{{ r.evening }}</td><td class="num">{{ r.samples }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+  <details>
+    <summary>Show every day ({{ traffic.days }})</summary>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Day</th><th scope="col">Date</th><th scope="col" class="num">Morning rush</th><th scope="col" class="num">Evening rush</th><th scope="col" class="num">Readings</th></tr></thead>
+        <tbody>
+          {% for r in traffic.rows %}
+          <tr><td>{{ r.weekday }}</td><td>{{ r.date }}</td><td class="num">{{ r.morning }}</td><td class="num">{{ r.evening }}</td><td class="num">{{ r.samples }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </details>
+  {% endif %}
 </section>
 
 {# ---- Every metric -------------------------------------------------------- #}
@@ -141,5 +180,6 @@
 
 {% block scripts %}
 <script id="city-data" type="application/json">{{ charts|tojson }}</script>
+<script src="{{ root }}/assets/charts.js" defer></script>
 <script src="{{ root }}/assets/city.js" defer></script>
 {% endblock %}

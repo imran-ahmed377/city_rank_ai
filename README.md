@@ -17,7 +17,8 @@ All data comes from public APIs. A GitHub Actions workflow refreshes the data an
 ## What's on the site
 
 - **Rankings page.** An overall score (0–100) and seven category scores per city. Sliders let you set your own priorities, and the table re-ranks instantly.
-- **City pages.** Category scores and ranks, current weather and a 7-day forecast, 12 months of temperature, rain and snow charts, rank history, rush-hour congestion, and every underlying metric with its source and period.
+- **City pages.** Category scores and ranks, current weather and a 7-day forecast, 12 months of temperature, rain and snow charts, rank history, rush-hour congestion (every sampled day plus a Monday–Friday breakdown), and every underlying metric with its source and period.
+- **Compare page.** Pick any three cities and see every score, statistic and chart side by side, with the best of the three highlighted. The selection is in the URL, so comparisons can be shared.
 
 ## Data sources
 

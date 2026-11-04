@@ -9,7 +9,9 @@ How it works
    (07-10 or 16-19). The workflow runs every hour (GitHub often delays scheduled
    runs by hours, so fixed times would miss rush hour), and each run samples
    whichever cities are in rush hour at that moment.
-3. Every sample is appended to history/traffic_samples.csv (kept 120 days).
+3. Every sample is appended to history/traffic_samples.csv and kept permanently,
+   so the city pages can show the whole accumulated history (by day, by weekday,
+   morning vs evening rush). At ~1,000 readings/day the file grows a few MB a year.
 4. The ranked metric is the 30-day average of
        congestion % = (1 - current_speed / free_flow_speed) * 100
    i.e. "traffic moves X% slower than when roads are empty".
@@ -37,7 +39,7 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import requests
 
-from ..cities import City
+from ..cities import CITIES_BY_SLUG, City
 from ..config import HTTP_TIMEOUT
 from ..store import Store, format_ts, utc_now
 from .base import Source, metric_row, rows_to_frame
@@ -48,10 +50,13 @@ FLOW_API = "https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/1
 SAMPLE_RADIUS_KM = 4.0
 COMPASS_BEARINGS = (0, 45, 90, 135, 180, 225, 270, 315)  # N, NE, E, ... NW
 RUSH_HOURS = (range(7, 10), range(16, 19))               # local hours 07-09 and 16-18 (inclusive)
-AVERAGE_WINDOW_DAYS = 30
-KEEP_SAMPLE_DAYS = 120
+AVERAGE_WINDOW_DAYS = 30                                 # the ranked metric uses the last 30 days
 MIN_CONFIDENCE = 0.5                                     # ignore low-confidence TomTom readings
 HISTORY_NAME = "traffic_samples"
+
+# Fixed English names (strftime("%A") depends on the machine's locale).
+WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+MORNING, EVENING, OTHER = "morning", "evening", "other"
 
 
 def sample_points(city: City) -> list[tuple[float, float]]:
@@ -156,13 +161,78 @@ def congestion_by_city(samples: pd.DataFrame, now: datetime, window_days: int = 
     return grouped.reset_index()[columns]
 
 
+def with_local_time(readings: pd.DataFrame) -> pd.DataFrame:
+    """Add the city's *local* date, weekday and rush period to each reading.
+
+    Samples are stored in UTC, but "Monday morning in Vancouver" only makes sense
+    in Vancouver time - e.g. 00:30 UTC Tuesday is 17:30 Monday in Vancouver.
+    Adds columns: local_date (YYYY-MM-DD), weekday_num (0=Monday), weekday (name)
+    and rush ("morning", "evening", or "other" for forced off-peak samples).
+    """
+    columns = ["local_date", "weekday_num", "weekday", "rush"]
+    if readings.empty:
+        return readings.assign(**{c: pd.Series(dtype=object) for c in columns})
+
+    parts = []
+    utc_times = pd.to_datetime(readings["sampled_at_utc"], utc=True)
+    for slug, idx in readings.groupby("city").groups.items():
+        city = CITIES_BY_SLUG.get(slug)
+        tz = city.timezone if city else "UTC"
+        local = utc_times.loc[idx].dt.tz_convert(tz)
+        hours = local.dt.hour
+        rush = pd.Series(OTHER, index=idx)
+        rush[hours.isin(RUSH_HOURS[0])] = MORNING
+        rush[hours.isin(RUSH_HOURS[1])] = EVENING
+        parts.append(
+            pd.DataFrame(
+                {
+                    "local_date": local.dt.strftime("%Y-%m-%d"),
+                    "weekday_num": local.dt.weekday,
+                    "weekday": local.dt.weekday.map(lambda d: WEEKDAYS[d]),
+                    "rush": rush,
+                },
+                index=idx,
+            )
+        )
+    return readings.join(pd.concat(parts))
+
+
+def _morning_evening(df: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
+    """Mean congestion per group, split into morning / evening columns + sample count."""
+    split = (
+        df[df["rush"].isin([MORNING, EVENING])]
+        .pivot_table(index=keys, columns="rush", values="congestion_pct", aggfunc="mean")
+        .reindex(columns=[MORNING, EVENING])
+        .rename(columns={MORNING: "morning_pct", EVENING: "evening_pct"})
+    )
+    overall = df.groupby(keys).agg(all_pct=("congestion_pct", "mean"), samples=("congestion_pct", "size"))
+    return overall.join(split).reset_index()
+
+
 def daily_congestion(samples: pd.DataFrame) -> pd.DataFrame:
-    """Mean congestion % per city per UTC day - used for the city-page chart."""
-    df = valid_readings(samples)
+    """One row per city per *local* day, over the whole stored history.
+
+    Columns: city, date, weekday, morning_pct, evening_pct, all_pct, samples.
+    """
+    columns = ["city", "date", "weekday", "morning_pct", "evening_pct", "all_pct", "samples"]
+    df = with_local_time(valid_readings(samples))
     if df.empty:
-        return pd.DataFrame(columns=["city", "date", "congestion_pct"])
-    df = df.assign(date=df["sampled_at_utc"].astype(str).str[:10])
-    return df.groupby(["city", "date"], as_index=False)["congestion_pct"].mean()
+        return pd.DataFrame(columns=columns)
+    daily = _morning_evening(df, ["city", "local_date", "weekday"]).rename(columns={"local_date": "date"})
+    return daily[columns].sort_values(["city", "date"]).reset_index(drop=True)
+
+
+def weekday_congestion(samples: pd.DataFrame) -> pd.DataFrame:
+    """Average congestion per city per weekday (Monday-Friday), over the whole history.
+
+    Columns: city, weekday_num, weekday, morning_pct, evening_pct, all_pct, samples.
+    """
+    columns = ["city", "weekday_num", "weekday", "morning_pct", "evening_pct", "all_pct", "samples"]
+    df = with_local_time(valid_readings(samples))
+    if df.empty:
+        return pd.DataFrame(columns=columns)
+    weekly = _morning_evening(df, ["city", "weekday_num", "weekday"])
+    return weekly[columns].sort_values(["city", "weekday_num"]).reset_index(drop=True)
 
 
 def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd.DataFrame:
@@ -175,10 +245,8 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
     if api_key:
         new_samples = take_samples(session, api_key, cities, now, force)
         if not new_samples.empty:
-            store.append_history(
-                HISTORY_NAME, new_samples, key=["sampled_at_utc", "city", "point"],
-                time_column="sampled_at_utc", keep_days=KEEP_SAMPLE_DAYS, now=now,
-            )
+            # No pruning: every reading is kept so the history keeps accumulating.
+            store.append_history(HISTORY_NAME, new_samples, key=["sampled_at_utc", "city", "point"])
         log.info("[traffic] took %d samples", len(new_samples))
     else:
         log.warning("[traffic] TOMTOM_API_KEY not set - no new samples; using stored history only")

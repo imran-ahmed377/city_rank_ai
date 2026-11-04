@@ -3,6 +3,10 @@
    static/rankings.js re-scores and re-sorts the rows when sliders move. #}
 {% extends "base.html" %}
 
+{% block topbar %}
+<nav class="topnav"><a class="nav-link" href="compare.html">Compare cities</a></nav>
+{% endblock %}
+
 {% block content %}
 <header class="site-header">
   <div class="kicker">Canada · {{ total_cities }} largest metro areas</div>
@@ -37,6 +41,8 @@
   <div class="card-head">
     <h2 id="rank-title">Rankings</h2>
     <span class="muted small" id="weights-state">Default weights</span>
+    {# rankings.js keeps this link pointing at the current top 3 (it follows the sliders). #}
+    <a class="nav-link" id="compare-top" href="compare.html#{{ rows[:3]|map(attribute="slug")|join(",") }}">Compare the top 3 side by side →</a>
   </div>
   <div class="table-scroll">
     <table id="rank-table">

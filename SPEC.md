@@ -58,7 +58,8 @@ Default weights are importance levels from 0 to 10. The percentage is each weigh
 - **Schedule:** the workflow runs every hour. GitHub often starts scheduled runs 2–4 hours late, so fixed times can't be relied on; with hourly runs, each city is sampled several times inside each of its rush-hour windows.
 - **Per reading:** congestion % = (1 − current speed ÷ free-flow speed) × 100, clipped at 0.
 - **Excluded readings:** closed roads and readings with TomTom confidence below 0.5.
-- **The metric:** the mean of all valid readings over the last 30 days. Raw samples are kept for 120 days.
+- **The metric:** the mean of all valid readings over the last 30 days.
+- **History:** every raw reading is kept permanently (no pruning). City pages summarise the whole history by the city's *local* date and weekday, split into morning and evening rush.
 - **Budget:** at most about 1,080 requests a day (20 cities × 6 rush-hour runs × 9 points), against TomTom's free limit of 2,500.
 
 ## 4. Scoring
@@ -101,7 +102,7 @@ The `data/` folder is not committed to `main`. It lives on the `bot/data` branch
 data/
   metrics/<source>.csv           latest tidy rows: city, metric, value, period, source, fetched_at
   history/weather_observations.csv   current conditions, one row per city per run (kept forever)
-  history/traffic_samples.csv        raw TomTom readings (pruned to 120 days)
+  history/traffic_samples.csv        raw TomTom readings (kept permanently)
   history/rankings.csv               overall score + rank per city per UTC date
   weather/daily_365.csv              daily climate table for charts
   weather/forecast.csv               next 7 days per city
@@ -158,8 +159,18 @@ The site is static, generated with Jinja2 into `docs/`, and served by GitHub Pag
 **`city/<slug>.html`**
 - Rank and overall score, plus category score bars with the city's rank in each category.
 - "Right now" tiles (weather and AQI) and a 7-day forecast.
-- Charts (Plotly 2.35.2 from cdn.plot.ly): rank over time, daily high/low temperature, daily rain, daily snowfall, and rush-hour congestion.
+- Charts (Plotly 2.35.2 from cdn.plot.ly): rank over time, daily high/low temperature, daily rain, daily snowfall, rush-hour congestion for every sampled day (morning and evening series, weekday name on hover), and average congestion by weekday (Monday–Friday).
+- Traffic tables: weekday averages, and every sampled day with its weekday name.
+- A link to the compare page with this city pre-selected.
 - A monthly climate table and a table of every metric, with value, score, period and source.
+
+**`compare.html`**
+- Three city pickers side by side, sticky at the top while scrolling (Apple-style "compare models" layout). The selection is kept in the URL hash (`#toronto,calgary,halifax`), so a comparison can be bookmarked or shared. Picking a city that is already shown swaps the two columns.
+- Defaults: cities from the URL hash, filled up with the top-ranked cities.
+- Sections, each a row-per-measure grid with one column per city: overview (rank, score, population), category scores, right now, 7-day forecast, climate (monthly charts plus key numbers), rank over time, rush-hour traffic (30-day value plus weekday chart), and every metric grouped by category.
+- "Best" marks the strongest of the three on each scored measure (only when at least two cities have data and the values differ).
+- Charts are small multiples with the same axis range in all three columns. Climate is monthly here (not daily) to keep the page light; it embeds a compact summary of all 20 cities.
+- Entry points: "Compare cities" in the home page top bar, "Compare the top 3" above the rankings (follows the sliders), and "Compare <city> with other cities" on each city page.
 
 **Chart rules**
 - Charts follow the light/dark color tokens in `style.css`.
@@ -168,7 +179,8 @@ The site is static, generated with Jinja2 into `docs/`, and served by GitHub Pag
 - Cards, tiles and the theme button are frosted glass (translucent fill + backdrop blur + bright rim). They fall back to solid `--surface` when the browser can't blur or the visitor prefers reduced transparency.
 - Every chart has a single y-axis.
 - Every chart has a table or text equivalent on the page.
-- Each page embeds only its own data, so pages also work when opened from disk.
+- Each page embeds the data it needs, so pages also work when opened from disk.
+- The footer carries the attribution the data licences require (Statistics Canada, Open-Meteo, OpenStreetMap, TomTom).
 
 ## 8. Automation
 

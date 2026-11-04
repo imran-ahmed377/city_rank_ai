@@ -30,6 +30,12 @@ def test_render_site_writes_index_and_city_pages(tmp_path, store):
     assert len(list((docs / "city").glob("*.html"))) == len(CITIES)
     toronto = (docs / "city" / "toronto.html").read_text(encoding="utf-8")
     assert "Average 2-bedroom rent" in toronto
+    assert "compare.html#toronto" in toronto            # link to the compare page
+
+    # Compare page embeds every city's summary for the three pickers.
+    compare = (docs / "compare.html").read_text(encoding="utf-8")
+    assert "compare-data" in compare and "pick-2" in compare
+    assert (docs / "assets" / "compare.js").exists() and (docs / "assets" / "charts.js").exists()
 
 
 def test_refresh_label():

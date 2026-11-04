@@ -46,8 +46,9 @@ city_rank/
   scoring.py       metric score (min-max) -> category mean -> weighted overall + rank
   pipeline.py      CLI + orchestration (refresh intervals, retry missing cities, run_status.json)
   dashboard.py     builds template contexts; render_site() writes docs/
-  templates/       Jinja2: base.html, index.html, city.html; skyline.svg (generated background art)
-  static/          style.css (color tokens, light/dark), theme.js (theme button), rankings.js (sliders), city.js (Plotly charts)
+  templates/       Jinja2: base.html, index.html, city.html, compare.html; skyline.svg (generated background art)
+  static/          style.css (color tokens, light/dark), theme.js (theme button), rankings.js (sliders),
+                   charts.js (shared Plotly helpers), city.js (city charts), compare.js (3-city comparison)
 tests/             pytest, offline; synthetic data + tmp_path
 .github/workflows/city-rank.yml
 ```
@@ -91,3 +92,6 @@ Generated folders are git-ignored on `main`:
 - **Traffic only samples during local weekday rush hours.** A manual run at midday adds no samples unless `TRAFFIC_FORCE=1`.
 - **The workflow runs hourly on purpose.** GitHub starts scheduled runs 2–4 hours late, so fixed rush-hour times missed most cities. Don't reduce the schedule without a different way to catch every city's rush hour.
 - **`bot/data` holds only `data/`.** The site is rebuilt each run and deployed straight to Pages.
+- **Traffic history is never pruned**, and summaries use each city's *local* time (`traffic.with_local_time`). Don't group by the UTC date: a Vancouver evening reading is already the next day in UTC.
+- **The compare page reuses the city-page contexts** (`build_compare_context`). If you add a metric or a city-page field, it shows up in both. Climate on the compare page is monthly, to keep `compare.html` small (all 20 cities are embedded).
+- **GitHub runs the hourly schedule only every ~5–7 hours** (best-effort scheduling). Expect sparse traffic samples unless the workflow is triggered externally (see PLAN.md).

@@ -30,6 +30,11 @@
       <p>Updated {{ generated_at }} · Built automatically by GitHub Actions from public data ·
         <a href="{{ repo_url }}">Source code</a></p>
       <p>Scores are relative: 100 = best of the {{ total_cities }} metro areas ranked, 0 = worst. They are not an absolute measure of quality of life.</p>
+      {# Attribution required by the data licences (StatCan Open Licence, Open-Meteo CC BY 4.0, OSM ODbL, TomTom terms). #}
+      <p class="attribution">Data: Statistics Canada (<a href="https://www.statcan.gc.ca/en/reference/licence">Open Licence</a>) ·
+        weather and air quality by <a href="https://open-meteo.com/">Open-Meteo.com</a> (CC BY 4.0) ·
+        amenities © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL) ·
+        traffic © <a href="https://www.tomtom.com/">TomTom</a>.</p>
     </footer>
   </main>
   <script src="{{ root }}/assets/theme.js"></script>

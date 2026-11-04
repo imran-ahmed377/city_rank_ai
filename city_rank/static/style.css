@@ -254,3 +254,60 @@ summary { cursor: pointer; color: var(--link); font-size: 0.9rem; }
 .state-failed { color: #d03b3b; }
 
 footer { margin-top: 2rem; color: var(--ink-2); font-size: 0.85rem; }
+
+/* ---- Navigation links in the top bar ------------------------------------------ */
+.topnav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1.2rem; }
+.nav-link { font-size: 0.9rem; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- Compare page: three equal columns, rows label-above-values (Apple style) --- */
+/* minmax(0, 1fr) lets columns shrink below their content so the page never
+   scrolls sideways on a phone; long text wraps inside its column instead. */
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: clamp(0.6rem, 2.5vw, 1.75rem);
+}
+/* Full-width row label with a hairline above it, values in the three columns below. */
+.cmp-label {
+  grid-column: 1 / -1;
+  margin-top: 0.9rem; padding-top: 0.75rem;
+  border-top: 1px solid var(--grid);
+  font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2);
+}
+.compare-grid > .cmp-label:first-child { margin-top: 0.25rem; }
+.cmp-note { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--muted); }
+.cmp-cell { padding-top: 0.45rem; min-width: 0; overflow-wrap: anywhere; }
+.cmp-big { font-size: 1.5rem; font-weight: 700; }
+.cmp-group { grid-column: 1 / -1; margin-top: 1.4rem; font-size: 1.05rem; }
+.cmp-cell .bar { margin-bottom: 0.15rem; }
+/* "Best" badge: text + colour, never colour alone. */
+.is-best { font-weight: 700; }
+.best {
+  display: inline-block; margin-left: 0.35rem; padding: 0 0.45rem;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; vertical-align: 0.15em;
+  color: var(--good); border: 1px solid currentColor; border-radius: 999px;
+}
+
+/* Sticky picker row: stays at the top while scrolling so you always know which column is which. */
+.compare-head { position: sticky; top: 0.5rem; z-index: 5; padding-block: 0.75rem; }
+.compare-pick { min-width: 0; }
+.city-select {
+  width: 100%; font: inherit; font-weight: 600; color: var(--ink);
+  padding: 0.45rem 0.6rem; border-radius: 12px;
+  border: 1px solid var(--axis); background: var(--glass-inner); cursor: pointer;
+}
+.pick-meta { margin-top: 0.45rem; }
+.pick-name { font-size: 1.35rem; font-weight: 700; line-height: 1.2; }
+
+.mini-chart { width: 100%; min-height: 220px; }
+.mini-forecast { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+.mini-forecast li { display: grid; grid-template-columns: 2.4rem auto; column-gap: 0.4rem; align-items: baseline; }
+.mini-forecast li .small { grid-column: 1 / -1; }
+
+@media (max-width: 640px) {
+  .cmp-big { font-size: 1.15rem; }
+  .pick-name { font-size: 1.05rem; }
+  .compare-head .muted.small { display: none; }    /* keep the sticky bar short on phones */
+  .mini-chart { min-height: 180px; }
+}

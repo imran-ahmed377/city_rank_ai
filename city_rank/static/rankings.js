@@ -72,6 +72,10 @@
       tbody.appendChild(row.tr); // moving an existing node re-orders it
     });
 
+    // Point the "Compare the top 3" link at the current top 3 (it follows the sliders).
+    const compareLink = document.getElementById("compare-top");
+    if (compareLink) compareLink.href = "compare.html#" + rows.slice(0, 3).map((r) => r.tr.dataset.slug).join(",");
+
     // Remember the visitor's weights in this browser (optional convenience).
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(weights)); } catch (e) { /* storage blocked */ }
   }

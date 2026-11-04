@@ -3,12 +3,14 @@
 Output:
     docs/index.html          rankings table + weight sliders + methodology + sources
     docs/city/<slug>.html    one detail page per city (scores, metrics, charts)
+    docs/compare.html        pick any 3 cities and compare everything side by side
     docs/assets/*            CSS/JS copied from city_rank/static/
     docs/.nojekyll           tells GitHub Pages to serve files as-is
 
-Templates live in city_rank/templates/. Each page embeds only its own data
-(as JSON inside a <script> tag), so pages stay small and work when opened
-straight from disk.
+Templates live in city_rank/templates/. Each page embeds only the data it needs
+(as JSON inside a <script> tag), so pages work when opened straight from disk.
+The compare page embeds a compact summary of every city (monthly instead of
+daily climate data) so visitors can switch cities without loading anything.
 """
 
 from __future__ import annotations
@@ -27,7 +29,7 @@ from .catalog import CATEGORIES, METRICS, METRICS_BY_KEY, Metric
 from .cities import CITIES, CITIES_BY_SLUG
 from .scoring import RankingResult, category_ranks
 from .sources import SOURCES_BY_NAME
-from .sources.traffic import HISTORY_NAME as TRAFFIC_HISTORY, daily_congestion
+from .sources.traffic import HISTORY_NAME as TRAFFIC_HISTORY, WEEKDAYS, daily_congestion, weekday_congestion
 from .store import Store
 
 # WMO weather interpretation codes used by Open-Meteo -> short description.
@@ -138,18 +140,23 @@ def build_index_context(result: RankingResult, run_status: dict[str, Any]) -> di
     }
 
 
-def monthly_summary(daily: pd.DataFrame) -> list[dict[str, Any]]:
-    """Month-by-month table (the accessible twin of the year-long charts)."""
+def monthly_frame(daily: pd.DataFrame) -> pd.DataFrame:
+    """Daily climate rows -> one row per month (average highs/lows, total rain/snow/sun)."""
     if daily.empty:
-        return []
+        return pd.DataFrame(columns=["temp_max_c", "temp_min_c", "rain_mm", "snowfall_cm", "sunshine_h"])
     df = daily.assign(month=daily["date"].astype(str).str[:7])
-    grouped = df.groupby("month").agg(
+    return df.groupby("month").agg(
         temp_max_c=("temp_max_c", "mean"),
         temp_min_c=("temp_min_c", "mean"),
         rain_mm=("rain_mm", "sum"),
         snowfall_cm=("snowfall_cm", "sum"),
         sunshine_h=("sunshine_h", "sum"),
     )
+
+
+def monthly_summary(daily: pd.DataFrame) -> list[dict[str, Any]]:
+    """Month-by-month table (the accessible twin of the year-long charts)."""
+    grouped = monthly_frame(daily)
     return [
         {
             "month": month,
@@ -163,6 +170,56 @@ def monthly_summary(daily: pd.DataFrame) -> list[dict[str, Any]]:
     ]
 
 
+def pct(value: Any) -> str:
+    """Congestion % for tables: '23.4%' or an em dash."""
+    value = clean(value)
+    return "—" if value is None else f"{value:.1f}%"
+
+
+def traffic_context(slug: str, traffic_daily: pd.DataFrame, traffic_weekday: pd.DataFrame) -> dict[str, Any]:
+    """Traffic charts + tables for one city, from the full accumulated history.
+
+    daily   : one entry per local day (oldest first, for the chart)
+    weekday : Monday-Friday averages, always all five days so bars line up
+    rows    : the daily table, newest first, with weekday names
+    """
+    daily = traffic_daily[traffic_daily["city"] == slug] if not traffic_daily.empty else traffic_daily
+    weekly = traffic_weekday[traffic_weekday["city"] == slug] if not traffic_weekday.empty else traffic_weekday
+    weekly = weekly.set_index("weekday") if not weekly.empty else weekly
+
+    def col(df: pd.DataFrame, name: str, digits: int = 1) -> list[Any]:
+        if df.empty:
+            return []
+        return [None if clean(v) is None else round(float(v), digits) for v in df[name]]
+
+    weekdays = list(WEEKDAYS[:5])
+    by_weekday = {
+        "weekday": weekdays,
+        "morning_pct": [clean(round(weekly.at[d, "morning_pct"], 1)) if d in weekly.index else None for d in weekdays],
+        "evening_pct": [clean(round(weekly.at[d, "evening_pct"], 1)) if d in weekly.index else None for d in weekdays],
+        "samples": [int(weekly.at[d, "samples"]) if d in weekly.index else 0 for d in weekdays],
+    }
+    return {
+        "daily": {
+            "date": list(daily["date"]) if not daily.empty else [],
+            "weekday": list(daily["weekday"]) if not daily.empty else [],
+            "morning_pct": col(daily, "morning_pct"),
+            "evening_pct": col(daily, "evening_pct"),
+        },
+        "weekday": by_weekday,
+        "rows": [
+            {"weekday": r.weekday, "date": r.date, "morning": pct(r.morning_pct), "evening": pct(r.evening_pct), "samples": int(r.samples)}
+            for r in daily.iloc[::-1].itertuples(index=False)
+        ] if not daily.empty else [],
+        "weekday_rows": [
+            {"weekday": d, "morning": pct(m), "evening": pct(e), "samples": n}
+            for d, m, e, n in zip(weekdays, by_weekday["morning_pct"], by_weekday["evening_pct"], by_weekday["samples"])
+        ],
+        "days": len(daily),
+        "first": daily["date"].iloc[0] if not daily.empty else None,
+    }
+
+
 def build_city_context(
     slug: str,
     result: RankingResult,
@@ -170,8 +227,9 @@ def build_city_context(
     forecast: pd.DataFrame,
     rank_history: pd.DataFrame,
     traffic_daily: pd.DataFrame,
+    traffic_weekday: pd.DataFrame,
 ) -> dict[str, Any]:
-    """Data for city.html."""
+    """Data for city.html (also reused, trimmed down, by the compare page)."""
     city = CITIES_BY_SLUG[slug]
     overall = result.overall.loc[slug]
     cat_ranks = category_ranks(result.category_scores)
@@ -198,11 +256,14 @@ def build_city_context(
         score = result.metric_scores.at[slug, metric.key] if metric.key in result.metric_scores.columns else None
         source = SOURCES_BY_NAME.get(metric.source)
         return {
+            "key": metric.key,
             "label": metric.label,
             "description": metric.description,
+            "raw": value_of(metric.key),          # unformatted number (compare page picks the best)
             "value": format_value(value_of(metric.key), metric),
             "unit": metric.unit,
             "score": format_score(score),
+            "score_raw": clean(score),
             "period": clean(periods.get(metric.key)) if metric.key in periods.index else None,
             "source_title": source.title if source else metric.source,
             "source_url": source.url if source else "",
@@ -250,7 +311,7 @@ def build_city_context(
     # Chart data (lists of plain values; None for gaps).
     daily = climate_daily[climate_daily["city"] == slug].sort_values("date") if not climate_daily.empty else climate_daily
     history = rank_history[rank_history["city"] == slug].sort_values("date") if not rank_history.empty else rank_history
-    traffic = traffic_daily[traffic_daily["city"] == slug].sort_values("date") if not traffic_daily.empty else traffic_daily
+    traffic = traffic_context(slug, traffic_daily, traffic_weekday)
 
     def column(df: pd.DataFrame, name: str) -> list[Any]:
         return [clean(v) for v in df[name]] if not df.empty and name in df else []
@@ -264,7 +325,8 @@ def build_city_context(
             "snowfall_cm": column(daily, "snowfall_cm"),
         },
         "rank_history": {"date": column(history, "date"), "rank": column(history, "rank"), "overall": column(history, "overall")},
-        "traffic": {"date": column(traffic, "date"), "congestion_pct": [None if v is None else round(v, 1) for v in column(traffic, "congestion_pct")]},
+        "traffic": traffic["daily"],
+        "traffic_weekday": traffic["weekday"],
         "total_cities": len(CITIES),
     }
 
@@ -278,8 +340,70 @@ def build_city_context(
         "now": now_tiles,
         "forecast": forecast_rows,
         "monthly": monthly_summary(daily),
+        "monthly_numbers": monthly_frame(daily),
+        "traffic": traffic,
         "climate_window": f"{daily['date'].iloc[0]} to {daily['date'].iloc[-1]}" if not daily.empty else None,
         "charts": charts,
+    }
+
+
+def build_compare_context(result: RankingResult, city_contexts: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Data for compare.html: a compact summary of every city, keyed by slug.
+
+    Reuses the city-page contexts so both pages always show the same numbers.
+    Climate is monthly here (12 points) rather than daily (365) to keep the page light.
+    """
+    shown_metrics = [m for m in METRICS if m.source != "weather"]   # "right now" has its own section
+    groups = [
+        {"label": c.label, "keys": [m.key for m in shown_metrics if m.category == c.key]} for c in CATEGORIES
+    ] + [{"label": "Other information (not scored)", "keys": [m.key for m in shown_metrics if m.category is None]}]
+
+    cities = {}
+    for slug, ctx in city_contexts.items():
+        city = ctx["city"]
+        months = ctx["monthly_numbers"]
+
+        def month_col(name: str, digits: int) -> list[Any]:
+            return [None if clean(v) is None else round(float(v), digits) for v in months[name]] if not months.empty else []
+
+        entries = {m["key"]: m for g in ctx["groups"] for m in g["metrics"]}
+        cities[slug] = {
+            "slug": slug,
+            "name": city.name,
+            "province": city.province,
+            "cma_name": city.cma_name,
+            "rank": ctx["rank"],
+            "overall": ctx["overall"],
+            "coverage": ctx["coverage"],
+            "categories": {c["key"]: {"score": c["score"], "rank": c["rank"]} for c in ctx["categories"]},
+            "metrics": {
+                key: {"value": e["value"], "raw": e["raw"], "score": e["score_raw"], "period": e["period"]}
+                for key, e in entries.items()
+            },
+            "now": ctx["now"],
+            "forecast": ctx["forecast"],
+            "monthly": {
+                "month": list(months.index) if not months.empty else [],
+                "temp_max_c": month_col("temp_max_c", 1),
+                "temp_min_c": month_col("temp_min_c", 1),
+                "rain_mm": month_col("rain_mm", 0),
+                "snowfall_cm": month_col("snowfall_cm", 0),
+            },
+            "rank_history": ctx["charts"]["rank_history"],
+            "traffic_weekday": ctx["traffic"]["weekday"],
+            "traffic_days": ctx["traffic"]["days"],
+        }
+
+    return {
+        "order": list(result.overall.index),   # rank order, best first (default weights)
+        "categories": [{"key": c.key, "label": c.label, "description": c.description} for c in CATEGORIES],
+        "metrics": {
+            m.key: {"label": m.label, "unit": m.unit, "higher_is_better": m.higher_is_better, "description": m.description}
+            for m in shown_metrics
+        },
+        "groups": groups,
+        "cities": cities,
+        "total_cities": len(CITIES),
     }
 
 
@@ -330,10 +454,21 @@ def render_site(
     climate_daily = store.read_table("weather/daily_365.csv")
     forecast = store.read_table("weather/forecast.csv")
     rank_history = store.load_history("rankings")
-    traffic_daily = daily_congestion(store.load_history(TRAFFIC_HISTORY))
+    traffic_samples = store.load_history(TRAFFIC_HISTORY)
+    traffic_daily = daily_congestion(traffic_samples)
+    traffic_weekday = weekday_congestion(traffic_samples)
 
+    # One page per city; keep each context for the compare page.
     city_template = env.get_template("city.html")
+    contexts: dict[str, dict[str, Any]] = {}
     for slug in result.overall.index:
-        context = build_city_context(slug, result, climate_daily, forecast, rank_history, traffic_daily)
+        context = build_city_context(slug, result, climate_daily, forecast, rank_history, traffic_daily, traffic_weekday)
+        contexts[slug] = context
         html = city_template.render(root="..", **common, **context)
         (docs_dir / "city" / f"{slug}.html").write_text(html, encoding="utf-8")
+
+    # Compare page (all cities' summaries embedded; the visitor picks 3).
+    compare_html = env.get_template("compare.html").render(
+        root=".", **common, compare=build_compare_context(result, contexts)
+    )
+    (docs_dir / "compare.html").write_text(compare_html, encoding="utf-8")
