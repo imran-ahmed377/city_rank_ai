@@ -26,7 +26,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import config
 from .catalog import CATEGORIES, METRICS, METRICS_BY_KEY, Metric
-from .cities import CITIES, CITIES_BY_SLUG
+from .cities import CITIES, CITIES_BY_SLUG, GTA_SLUGS, City
 from .scoring import RankingResult, category_ranks
 from .sources import SOURCES_BY_NAME
 from .sources.traffic import HISTORY_NAME as TRAFFIC_HISTORY, WEEKDAYS, daily_congestion, weekday_congestion
@@ -83,6 +83,11 @@ def aqi_label(aqi: Any) -> str:
     return "Hazardous"
 
 
+def region_label(city: City) -> str:
+    """Where a city sits: 'Greater Toronto Area' for GTA cities, else '<CMA> metro area'."""
+    return "Greater Toronto Area" if city.slug in GTA_SLUGS else f"{city.cma_name} metro area"
+
+
 def refresh_label(ttl_hours: float | None) -> str:
     """Source refresh interval in words: 'every run', 'every 12 hours', 'every 7 days'."""
     if ttl_hours is None:
@@ -112,6 +117,7 @@ def build_index_context(result: RankingResult, run_status: dict[str, Any]) -> di
                 "slug": slug,
                 "name": city.name,
                 "province": city.province,
+                "gta": slug in GTA_SLUGS,
                 "rank": clean(overall["rank"]),
                 "overall": clean(overall["overall"]),
                 "coverage": clean(overall["coverage"]),
@@ -332,6 +338,7 @@ def build_city_context(
 
     return {
         "city": city,
+        "region": region_label(city),
         "rank": clean(overall["rank"]),
         "overall": clean(overall["overall"]),
         "coverage": clean(overall["coverage"]),
@@ -372,6 +379,7 @@ def build_compare_context(result: RankingResult, city_contexts: dict[str, dict[s
             "name": city.name,
             "province": city.province,
             "cma_name": city.cma_name,
+            "region": ctx["region"],
             "rank": ctx["rank"],
             "overall": ctx["overall"],
             "coverage": ctx["coverage"],

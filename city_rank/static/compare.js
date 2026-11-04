@@ -95,7 +95,7 @@
       pickers[i].value = c.slug;
       document.getElementById("meta-" + i).innerHTML =
         '<div class="pick-name">' + esc(c.name) + "</div>" +
-        '<div class="muted small">' + esc(c.cma_name) + " metro · " + esc(c.province) + "</div>";
+        '<div class="muted small">' + esc(c.region) + " · " + esc(c.province) + "</div>";
     });
   }
 

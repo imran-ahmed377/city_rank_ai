@@ -16,8 +16,12 @@ How it works
        congestion % = (1 - current_speed / free_flow_speed) * 100
    i.e. "traffic moves X% slower than when roads are empty".
 
-Request budget: a city is in rush hour for 6 hours per weekday, so at most
-20 cities x 6 runs x 9 points ≈ 1,080 requests/day - inside TomTom's free 2,500/day.
+Request budget: a city is in rush hour for 6 hours per weekday, so with one run
+per hour at most 29 cities x 6 runs x 9 points ≈ 1,570 requests/day - inside
+TomTom's free 2,500/day. Two guards keep it there even if runs pile up
+(GitHub's schedule + the external hourly trigger + manual runs):
+  * a city sampled in the last MIN_MINUTES_BETWEEN_SAMPLES is skipped;
+  * no new requests once DAILY_REQUEST_CAP readings were taken in the last 24 h.
 
 The key is read from the TOMTOM_API_KEY environment variable (a GitHub secret in
 CI). Without a key, no new samples are taken but metrics are still computed from
@@ -52,6 +56,8 @@ COMPASS_BEARINGS = (0, 45, 90, 135, 180, 225, 270, 315)  # N, NE, E, ... NW
 RUSH_HOURS = (range(7, 10), range(16, 19))               # local hours 07-09 and 16-18 (inclusive)
 AVERAGE_WINDOW_DAYS = 30                                 # the ranked metric uses the last 30 days
 MIN_CONFIDENCE = 0.5                                     # ignore low-confidence TomTom readings
+MIN_MINUTES_BETWEEN_SAMPLES = 45                         # at most one sample per city per hour
+DAILY_REQUEST_CAP = 2200                                 # stay safely under TomTom's free 2,500/day
 HISTORY_NAME = "traffic_samples"
 
 # Fixed English names (strftime("%A") depends on the machine's locale).
@@ -92,13 +98,43 @@ def fetch_point(session: requests.Session, api_key: str, lat: float, lon: float)
     return response.json().get("flowSegmentData") or {}
 
 
-def take_samples(session: requests.Session, api_key: str, cities: Sequence[City], now: datetime, force: bool) -> pd.DataFrame:
-    """Sample every city that is in rush hour (or all cities when ``force``)."""
+def sampling_limits(history: pd.DataFrame, now: datetime) -> tuple[set[str], int]:
+    """(cities sampled too recently, requests still allowed in the rolling 24 h)."""
+    if history.empty:
+        return set(), DAILY_REQUEST_CAP
+    stamps = history["sampled_at_utc"].astype(str)
+    recent_cutoff = format_ts(now - timedelta(minutes=MIN_MINUTES_BETWEEN_SAMPLES))
+    day_cutoff = format_ts(now - timedelta(hours=24))
+    recent = set(history.loc[stamps >= recent_cutoff, "city"])
+    used_today = int((stamps >= day_cutoff).sum())
+    return recent, max(0, DAILY_REQUEST_CAP - used_today)
+
+
+def take_samples(
+    session: requests.Session,
+    api_key: str,
+    cities: Sequence[City],
+    now: datetime,
+    force: bool,
+    history: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Sample every city that is in rush hour (or all cities when ``force``).
+
+    ``history`` (the stored samples) is used for the two budget guards described
+    in the module docstring.
+    """
+    recent, budget = sampling_limits(history if history is not None else pd.DataFrame(), now)
     rows: list[dict[str, Any]] = []
     stamp = format_ts(now)
     for city in cities:
         if not force and not in_rush_hour(city, now):
             continue
+        if city.slug in recent:
+            continue  # already sampled this hour (e.g. two runs close together)
+        if budget < len(COMPASS_BEARINGS) + 1:
+            log.warning("[traffic] daily request cap reached - skipping remaining cities")
+            break
+        budget -= len(COMPASS_BEARINGS) + 1
         for index, (lat, lon) in enumerate(sample_points(city)):
             try:
                 data = fetch_point(session, api_key, lat, lon)
@@ -243,7 +279,7 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
 
     # Step 1 - take new samples (only possible with an API key).
     if api_key:
-        new_samples = take_samples(session, api_key, cities, now, force)
+        new_samples = take_samples(session, api_key, cities, now, force, store.load_history(HISTORY_NAME))
         if not new_samples.empty:
             # No pruning: every reading is kept so the history keeps accumulating.
             store.append_history(HISTORY_NAME, new_samples, key=["sampled_at_utc", "city", "point"])

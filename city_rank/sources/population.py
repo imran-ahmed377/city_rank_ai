@@ -1,7 +1,10 @@
 """Population and population growth from Statistics Canada.
 
-Table 17-10-0148-01 "Population estimates, July 1, by census metropolitan area
-and census agglomeration, 2021 boundaries" (annual).
+Two tables (both annual, July 1 estimates, 2021 boundaries):
+
+* 17-10-0148-01 - by census metropolitan area: used for the metro-area cities.
+* 17-10-0155-01 - by census subdivision (municipality): used for the GTA cities,
+  so Mississauga gets Mississauga's population rather than the whole Toronto CMA's.
 
 * population            - latest estimate (info only, shown on city pages)
 * population_growth_pct - change over the latest year (ranked, higher is better:
@@ -30,7 +33,6 @@ GEO_IDS: dict[str, int] = {
     "montreal": 14,               # Montréal (CMA), Quebec
     "ottawa": 15,                 # Ottawa - Gatineau (CMA), Ontario/Quebec
     "oshawa": 21,                 # Oshawa (CMA), Ontario
-    "toronto": 22,                # Toronto (CMA), Ontario
     "hamilton": 23,               # Hamilton (CMA), Ontario
     "st-catharines-niagara": 24,  # St. Catharines - Niagara (CMA), Ontario
     "kitchener-waterloo": 25,     # Kitchener - Cambridge - Waterloo (CMA), Ontario
@@ -49,17 +51,29 @@ GEO_IDS: dict[str, int] = {
 GENDER_TOTAL = 1      # Dimension 2: "Total - gender"
 AGE_ALL = 1           # Dimension 3: "All ages"
 
+# --- Table 2: by census subdivision (municipality), for the GTA cities -------------
+CSD_PRODUCT_ID = 17100155
 
-def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd.DataFrame:
-    """Fetch the last two yearly estimates per city -> population and growth %."""
-    coordinates = {
-        city.slug: statcan.coordinate(GEO_IDS[city.slug], GENDER_TOTAL, AGE_ALL)
-        for city in cities
-        if city.slug in GEO_IDS
-    }
-    # Two periods so we can compute year-over-year growth.
-    series = statcan.fetch_series(session, PRODUCT_ID, coordinates, latest_n=2)
+# Geography member IDs; this table has no other dimensions (coordinate = geography only).
+CSD_GEO_IDS: dict[str, int] = {
+    "toronto": 2132,        # Toronto (C), Ontario
+    "mississauga": 2134,    # Mississauga (CY), Ontario
+    "brampton": 2135,       # Brampton (CY), Ontario
+    "markham": 2138,        # Markham (CY), Ontario
+    "vaughan": 2139,        # Vaughan (CY), Ontario
+    "oakville": 2142,       # Oakville (T), Ontario
+    "richmond-hill": 2143,  # Richmond Hill (T), Ontario
+    "milton": 2152,         # Milton (T), Ontario
+    "ajax": 2154,           # Ajax (T), Ontario
+    "pickering": 2160,      # Pickering (CY), Ontario
+}
 
+# For scripts/check_statcan_ids.py: every (table, slug -> member ID) mapping in this module.
+STATCAN_TABLES = [(PRODUCT_ID, GEO_IDS), (CSD_PRODUCT_ID, CSD_GEO_IDS)]
+
+
+def to_rows(series: dict[str, list[statcan.DataPoint]]) -> list[dict[str, Any]]:
+    """Two yearly points per city -> population (latest) and growth % rows."""
     rows: list[dict[str, Any]] = []
     for slug, points in series.items():
         point = statcan.latest(points)
@@ -68,6 +82,24 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
         change = statcan.pct_change(points)
         if change is not None:
             rows.append(metric_row(slug, "population_growth_pct", change[0], change[1]))
+    return rows
+
+
+def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd.DataFrame:
+    """Fetch the last two yearly estimates per city -> population and growth %.
+
+    Two periods are requested so year-over-year growth can be computed.
+    """
+    # Metro-area cities: geography.gender.age
+    cma = {
+        city.slug: statcan.coordinate(GEO_IDS[city.slug], GENDER_TOTAL, AGE_ALL)
+        for city in cities if city.slug in GEO_IDS
+    }
+    # GTA municipalities: geography only.
+    csd = {city.slug: statcan.coordinate(CSD_GEO_IDS[city.slug]) for city in cities if city.slug in CSD_GEO_IDS}
+
+    rows = to_rows(statcan.fetch_series(session, PRODUCT_ID, cma, latest_n=2))
+    rows += to_rows(statcan.fetch_series(session, CSD_PRODUCT_ID, csd, latest_n=2))
     return rows_to_frame(rows)
 
 
@@ -75,6 +107,6 @@ SOURCE = Source(
     name="population",
     ttl_hours=24 * 7,
     fetch=fetch,
-    title="Statistics Canada – Population estimates (17-10-0148-01)",
+    title="Statistics Canada – Population estimates (17-10-0148-01, 17-10-0155-01)",
     url="https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014801",
 )

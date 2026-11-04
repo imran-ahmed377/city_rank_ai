@@ -55,11 +55,42 @@ def test_pct_change():
 
 
 @pytest.mark.parametrize("module", [crime, jobs, population, housing])
-def test_statcan_geo_ids_cover_known_cities(module):
-    # Every ID refers to a configured city; only Oshawa may be missing (crime table).
-    assert set(module.GEO_IDS) <= set(CITIES_BY_SLUG)
-    missing = set(CITIES_BY_SLUG) - set(module.GEO_IDS)
-    assert missing <= {"oshawa"}
+def test_statcan_tables_cover_every_city_exactly_once(module):
+    # Across a module's tables, every configured city has exactly one StatCan member.
+    seen: list[str] = []
+    for _, geo_ids in module.STATCAN_TABLES:
+        assert set(geo_ids) <= set(CITIES_BY_SLUG)
+        seen += list(geo_ids)
+    assert sorted(seen) == sorted(CITIES_BY_SLUG)
+
+
+def test_gta_cities_share_toronto_metro_jobs_and_rent_but_not_population():
+    from city_rank.cities import GTA_SLUGS, metro_period
+    assert {jobs.GEO_IDS[s] for s in GTA_SLUGS} == {26}            # Toronto CMA
+    assert {housing.GEO_IDS[s] for s in GTA_SLUGS} == {125}         # Toronto CMA
+    assert len({population.CSD_GEO_IDS[s] for s in GTA_SLUGS}) == len(GTA_SLUGS)  # each its own
+    assert metro_period("brampton", "2026-09") == "2026-09 · Toronto metro"
+    assert metro_period("calgary", "2026-09") == "2026-09"
+
+
+def test_fetch_series_requests_each_shared_series_once():
+    sent = {}
+
+    class FakeSession:
+        def post(self, url, json, timeout):
+            sent["body"] = json
+
+            class R:
+                def raise_for_status(self): pass
+                def json(self):
+                    return [{"status": "SUCCESS", "object": {"coordinate": "26.5.1.1.0.0.0.0.0.0", "vectorDataPoint": [
+                        {"refPer": "2026-09-01", "value": 7.0, "frequencyCode": 6}]}}]
+            return R()
+
+    coords = {"toronto": "26.5.1.1.0.0.0.0.0.0", "mississauga": "26.5.1.1.0.0.0.0.0.0"}
+    series = statcan.fetch_series(FakeSession(), 14100459, coords)
+    assert len(sent["body"]) == 1                       # one request entry...
+    assert set(series) == {"toronto", "mississauga"}   # ...answers both cities
 
 
 # --------------------------------------------------------------------------- Climate
@@ -157,7 +188,7 @@ def test_every_catalog_metric_has_a_registered_source():
 
 
 def test_city_slugs_are_unique():
-    assert len({c.slug for c in CITIES}) == len(CITIES) == 20
+    assert len({c.slug for c in CITIES}) == len(CITIES) == 29
 
 
 # --------------------------------------------------------------------------- Traffic history (local time)
@@ -201,3 +232,31 @@ def test_traffic_history_is_never_pruned(store, monkeypatch):
     monkeypatch.setenv("TOMTOM_API_KEY", "")
     traffic.fetch(None, CITIES, store)
     assert len(store.load_history("traffic_samples")) == 1
+
+
+def test_traffic_guards_skip_recent_cities_and_respect_daily_cap():
+    now = datetime(2026, 10, 26, 12, 30, tzinfo=timezone.utc)      # Monday 08:30 in Toronto
+    history = _samples([("2026-10-26T12:00:00Z", "toronto", 50)])  # Toronto sampled 30 min ago
+    recent, budget = traffic.sampling_limits(history, now)
+    assert recent == {"toronto"} and budget == traffic.DAILY_REQUEST_CAP - 1
+
+    calls = []
+    class FakeSession:
+        def get(self, url, params, timeout):
+            calls.append(params["point"])
+            class R:
+                ok = True
+                def json(self):
+                    return {"flowSegmentData": {"currentSpeed": 50, "freeFlowSpeed": 60, "confidence": 1}}
+            return R()
+
+    cities = [CITIES_BY_SLUG["toronto"], CITIES_BY_SLUG["mississauga"]]
+    samples = traffic.take_samples(FakeSession(), "key", cities, now, force=False, history=history)
+    assert set(samples["city"]) == {"mississauga"}    # Toronto skipped: sampled this hour
+    assert len(calls) == len(traffic.sample_points(cities[1]))
+
+    # With the 24-hour cap used up, nothing is requested at all.
+    full = _samples([("2026-10-26T11:00:00Z", "calgary", 50)] * traffic.DAILY_REQUEST_CAP)
+    calls.clear()
+    assert traffic.take_samples(FakeSession(), "key", cities, now, force=False, history=full).empty
+    assert calls == []

@@ -14,7 +14,7 @@ from typing import Any, Sequence
 import pandas as pd
 import requests
 
-from ..cities import City
+from ..cities import GTA_SLUGS, City, metro_period
 from ..store import Store
 from . import statcan
 from .base import Source, metric_row, rows_to_frame
@@ -29,7 +29,6 @@ GEO_IDS: dict[str, int] = {
     "montreal": 17,               # Montréal, Quebec
     "ottawa": 19,                 # Ottawa-Gatineau, Ontario/Quebec
     "oshawa": 25,                 # Oshawa, Ontario
-    "toronto": 26,                # Toronto, Ontario
     "hamilton": 27,               # Hamilton, Ontario
     "st-catharines-niagara": 28,  # St. Catharines-Niagara, Ontario
     "kitchener-waterloo": 29,     # Kitchener-Cambridge-Waterloo, Ontario
@@ -44,6 +43,13 @@ GEO_IDS: dict[str, int] = {
     "vancouver": 52,              # Vancouver, British Columbia
     "victoria": 53,               # Victoria, British Columbia
 }
+
+# Every GTA city uses the Toronto CMA series (member 26): StatCan does not publish
+# this table for individual municipalities. The period gets a "Toronto metro" note.
+GEO_IDS.update({slug: 26 for slug in GTA_SLUGS})
+
+# For scripts/check_statcan_ids.py: every (table, slug -> member ID) mapping in this module.
+STATCAN_TABLES = [(PRODUCT_ID, GEO_IDS)]
 
 # Dimension 2 "Labour force characteristics" member -> our metric key.
 CHARACTERISTICS = {
@@ -69,7 +75,7 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
     for (slug, metric), points in series.items():
         point = statcan.latest(points)
         if point is not None:
-            rows.append(metric_row(slug, metric, point.value, point.label))
+            rows.append(metric_row(slug, metric, point.value, metro_period(slug, point.label)))
     return rows_to_frame(rows)
 
 

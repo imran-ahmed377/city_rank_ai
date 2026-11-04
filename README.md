@@ -1,6 +1,6 @@
 # City Rank AI
 
-Ranks the **20 largest Canadian metro areas** on living standards:
+Ranks **29 Canadian cities** on living standards: the largest metro areas, with Toronto split into its ten biggest GTA cities (Toronto, Mississauga, Brampton, Markham, Vaughan, Oakville, Richmond Hill, Milton, Ajax, Pickering). Each is scored on:
 
 - safety
 - jobs and economy
@@ -25,8 +25,8 @@ All data comes from public APIs. A GitHub Actions workflow refreshes the data an
 | Category | Source | Key needed? |
 |---|---|---|
 | Climate, current weather, air quality | [Open-Meteo](https://open-meteo.com/) (forecast, archive and air-quality APIs) | No |
-| Safety | Statistics Canada – Crime Severity Index (35-10-0026-01) | No |
-| Jobs & economy | Statistics Canada – Labour Force Survey (14-10-0459-01), Population estimates (17-10-0148-01) | No |
+| Safety | Statistics Canada – Crime Severity Index by metro area (35-10-0026-01) and by Ontario police service (35-10-0188-01) | No |
+| Jobs & economy | Statistics Canada – Labour Force Survey (14-10-0459-01), Population estimates by metro area and municipality (17-10-0148-01, 17-10-0155-01) | No |
 | Housing cost | CMHC average rents via Statistics Canada (34-10-0133-01) | No |
 | Amenities | OpenStreetMap via the Overpass API | No |
 | Traffic | [TomTom Traffic Flow API](https://developer.tomtom.com/) | Yes (free tier) |
@@ -61,7 +61,30 @@ Useful options:
 2. **TomTom key:**
    1. Create a free key at https://developer.tomtom.com/.
    2. Add it in Settings → Secrets and variables → Actions → **New repository secret**, named `TOMTOM_API_KEY`.
-3. **Workflow:** [.github/workflows/city-rank.yml](.github/workflows/city-rank.yml) runs every hour, on every push to `main`, and manually from the Actions tab.
+3. **Workflow:** [.github/workflows/city-rank.yml](.github/workflows/city-rank.yml) runs on every push to `main`, on GitHub's hourly schedule (best-effort, see below), and manually from the Actions tab. A manual run can refetch specific sources:
+   `gh workflow run city-rank.yml -f only=population,crime` (or `-f force=true` for everything).
+4. **Reliable hourly runs:** see the next section.
+
+### Reliable hourly runs (cron-job.org)
+
+GitHub treats scheduled workflows as best-effort, and in practice runs this one only every 5–7 hours. Traffic needs a sample in every rush hour, so an external free cron service triggers the workflow every hour instead. GitHub's schedule stays as a backup; duplicate runs are harmless because each city is sampled at most once per hour.
+
+1. **Create a GitHub token that can only start this workflow.** Go to GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → *Generate new token*.
+   - Repository access: **Only select repositories** → `city_rank_ai`.
+   - Permissions → Repository permissions → **Actions: Read and write**. Leave everything else at "No access".
+   - Pick an expiry date and put a reminder in your calendar to renew it.
+2. **Create a free account at https://cron-job.org** and add a cron job:
+   - URL: `https://api.github.com/repos/imran-ahmed377/city_rank_ai/actions/workflows/city-rank.yml/dispatches`
+   - Schedule: every hour, at minute 5.
+   - Advanced → Request method: **POST**.
+   - Headers:
+     - `Accept: application/vnd.github+json`
+     - `Authorization: Bearer <your token>`
+     - `X-GitHub-Api-Version: 2022-11-28`
+   - Request body: `{"ref":"main"}`
+3. **Test it** with cron-job.org's "Test run" button. GitHub answers **204 No Content** on success, and a new run appears in the repo's Actions tab within a minute.
+
+Cost: everything here is free. Public repositories get unlimited Actions minutes; cron-job.org is free; TomTom usage stays under its free 2,500 requests/day (about 1,570 at most, with a hard stop at 2,200).
 
 Fetched data and history are stored on the `bot/data` branch, so `main` contains only code.
 

@@ -6,7 +6,7 @@
 {% extends "base.html" %}
 
 {% block title %}Compare cities – {{ site_title }}{% endblock %}
-{% block description %}Compare any three of Canada's {{ total_cities }} largest metro areas side by side: scores, safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
+{% block description %}Compare any three of {{ total_cities }} Canadian cities side by side: scores, safety, jobs, housing, climate, air quality, traffic and amenities.{% endblock %}
 {% block head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>{% endblock %}
 
 {% block topbar %}
@@ -17,7 +17,7 @@
 <header class="site-header">
   <div class="kicker">Side by side</div>
   <h1>Compare cities</h1>
-  <p class="lede">Pick any three metro areas to compare every score, statistic and chart. “Best” marks the strongest of the three on each measure.</p>
+  <p class="lede">Pick any three cities to compare every score, statistic and chart. “Best” marks the strongest of the three on each measure.</p>
 </header>
 
 <noscript><div class="card"><p>The comparison needs JavaScript. Each city's full details are on its own page, linked from the <a href="{{ root }}/index.html">rankings</a>.</p></div></noscript>

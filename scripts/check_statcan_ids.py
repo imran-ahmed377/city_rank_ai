@@ -31,22 +31,35 @@ def simplify(text: str) -> str:
     return "".join(ch for ch in text.lower() if ch.isalnum())
 
 
+def expected_words(city, module) -> list[str]:
+    """Words that should appear in StatCan's label for this city's member.
+
+    The city's own name, its CMA name (GTA cities map to the Toronto CMA), and
+    for police-service mappings the service's name (e.g. "York" for Markham).
+    """
+    words = [city.name.split("–")[0], city.cma_name.split("–")[0]]
+    services = getattr(module, "POLICE_SERVICES", {})
+    if city.slug in services:
+        words.append(services[city.slug][1].split()[0])
+    return [simplify(w) for w in words]
+
+
 def main() -> int:
     session = build_session()
     problems = 0
     for module in (crime, jobs, population, housing):
-        response = session.post(f"{WDS_BASE}/getCubeMetadata", json=[{"productId": module.PRODUCT_ID}], timeout=HTTP_TIMEOUT)
-        response.raise_for_status()
-        meta = response.json()[0]["object"]
-        names = {m["memberId"]: m["memberNameEn"] for m in meta["dimension"][0]["member"]}
-        print(f"\n{module.PRODUCT_ID}  {meta['cubeTitleEn']}")
-        for slug, member_id in module.GEO_IDS.items():
-            city = CITIES_BY_SLUG[slug]
-            statcan_name = names.get(member_id, "<missing>")
-            # The first word of the CMA name should appear in StatCan's label.
-            ok = simplify(city.cma_name.split("–")[0]) in simplify(statcan_name)
-            problems += not ok
-            print(f"  {'ok ' if ok else '!! '} {city.cma_name:32} -> {member_id:>4}: {statcan_name}")
+        for product_id, geo_ids in module.STATCAN_TABLES:
+            response = session.post(f"{WDS_BASE}/getCubeMetadata", json=[{"productId": product_id}], timeout=HTTP_TIMEOUT)
+            response.raise_for_status()
+            meta = response.json()[0]["object"]
+            names = {m["memberId"]: m["memberNameEn"] for m in meta["dimension"][0]["member"]}
+            print(f"\n{product_id}  {meta['cubeTitleEn']}")
+            for slug, member_id in geo_ids.items():
+                city = CITIES_BY_SLUG[slug]
+                statcan_name = names.get(member_id, "<missing>")
+                ok = any(word in simplify(statcan_name) for word in expected_words(city, module))
+                problems += not ok
+                print(f"  {'ok ' if ok else '!! '} {city.name:26} -> {member_id:>5}: {statcan_name}")
     print(f"\n{problems} possible mismatch(es)")
     return 1 if problems else 0
 

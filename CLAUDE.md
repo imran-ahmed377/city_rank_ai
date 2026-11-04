@@ -4,7 +4,7 @@ Guidance for Claude Code (and humans) working in this repository.
 
 ## What this project is
 
-**City Rank AI** ranks the 20 largest Canadian metro areas on living standards:
+**City Rank AI** ranks 29 Canadian cities (the largest metro areas, with Toronto split into 10 GTA municipalities) on living standards:
 safety, jobs, housing cost, climate, air quality, traffic and amenities. All
 data comes from public APIs.
 
@@ -94,4 +94,7 @@ Generated folders are git-ignored on `main`:
 - **`bot/data` holds only `data/`.** The site is rebuilt each run and deployed straight to Pages.
 - **Traffic history is never pruned**, and summaries use each city's *local* time (`traffic.with_local_time`). Don't group by the UTC date: a Vancouver evening reading is already the next day in UTC.
 - **The compare page reuses the city-page contexts** (`build_compare_context`). If you add a metric or a city-page field, it shows up in both. Climate on the compare page is monthly, to keep `compare.html` small (all 20 cities are embedded).
-- **GitHub runs the hourly schedule only every ~5–7 hours** (best-effort scheduling). Expect sparse traffic samples unless the workflow is triggered externally (see PLAN.md).
+- **GitHub runs the hourly schedule only every ~5–7 hours** (best-effort scheduling). The real hourly trigger is external (cron-job.org → `workflow_dispatch`, see README). `traffic.take_samples` skips cities sampled in the last 45 minutes and stops at 2,200 readings per 24 h, so extra runs are safe.
+- **GTA cities use mixed data levels.** Population comes from the municipality (CSD table) and crime from the police service (`crime.POLICE_SERVICES`). Jobs and rent use the Toronto CMA (`GEO_IDS.update({slug: ... for slug in GTA_SLUGS})`), labelled via `cities.metro_period`. Each StatCan module lists its mappings in `STATCAN_TABLES`, which `scripts/check_statcan_ids.py` verifies.
+- **Several cities can share one StatCan series.** `statcan.fetch_series` requests each distinct coordinate once and fans the result out to every key.
+- **Amenities has a 20-minute time budget per run** and processes cities stalest-first. Cities not reached keep their old values and go first next time.

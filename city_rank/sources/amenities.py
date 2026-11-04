@@ -18,6 +18,7 @@ Docs: https://wiki.openstreetmap.org/wiki/Overpass_API
 
 from __future__ import annotations
 
+import logging
 import time
 from typing import Any, Sequence
 
@@ -30,6 +31,8 @@ from ..http import build_session
 from ..store import Store, utc_now
 from .base import Source, for_each_city, metric_row, rows_to_frame
 
+log = logging.getLogger(__name__)
+
 # Public Overpass servers, tried in order. The main server is often overloaded
 # (HTTP 504); the Kumi Systems mirror is a well-known public fallback.
 OVERPASS_ENDPOINTS = (
@@ -38,6 +41,12 @@ OVERPASS_ENDPOINTS = (
 )
 RADIUS_M = 10_000
 PAUSE_BETWEEN_CITIES_S = 2  # be polite to the shared Overpass server
+
+# Overpass can take a minute or more per city when busy. To keep a workflow run
+# well inside its time limit, stop starting new cities after this many minutes;
+# the cities not reached keep their previous values and are done first next time
+# (cities are processed stalest-first).
+TIME_BUDGET_MINUTES = 20
 
 # metric key -> Overpass filter. Order matters: results come back in this order.
 FEATURES: dict[str, str] = {
@@ -87,12 +96,22 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
     # overloaded, repeated retries just waste minutes - falling back to the mirror is faster.
     overpass_session = build_session(retries=1)
 
+    # Stalest first: cities never fetched, then the oldest fetches.
+    stored = store.load_metrics("amenities")
+    last = stored.groupby("city")["fetched_at"].max().to_dict() if not stored.empty else {}
+    ordered = sorted(cities, key=lambda c: str(last.get(c.slug, "")))
+
+    deadline = time.monotonic() + TIME_BUDGET_MINUTES * 60
+
     def one_city(city: City) -> list[dict[str, Any]]:
+        if time.monotonic() > deadline:
+            log.info("[amenities] time budget used up - %s will be fetched next time", city.name)
+            return []
         payload = run_query(overpass_session, build_query(city))
         time.sleep(PAUSE_BETWEEN_CITIES_S)
         return parse_counts(city, payload, period)
 
-    return rows_to_frame(for_each_city(cities, one_city, "amenities"))
+    return rows_to_frame(for_each_city(ordered, one_city, "amenities"))
 
 
 SOURCE = Source(

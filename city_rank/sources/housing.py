@@ -14,7 +14,7 @@ from typing import Any, Sequence
 import pandas as pd
 import requests
 
-from ..cities import City
+from ..cities import GTA_SLUGS, City, metro_period
 from ..store import Store
 from . import statcan
 from .base import Source, metric_row, rows_to_frame
@@ -33,7 +33,6 @@ GEO_IDS: dict[str, int] = {
     "oshawa": 104,                 # Oshawa, Ontario
     "ottawa": 105,                 # Ottawa-Gatineau, Ontario/Quebec
     "st-catharines-niagara": 117,  # St. Catharines-Niagara, Ontario
-    "toronto": 125,                # Toronto, Ontario
     "windsor": 128,                # Windsor, Ontario
     "winnipeg": 134,               # Winnipeg, Manitoba
     "regina": 140,                 # Regina, Saskatchewan
@@ -44,6 +43,13 @@ GEO_IDS: dict[str, int] = {
     "vancouver": 184,              # Vancouver, British Columbia
     "victoria": 186,               # Victoria, British Columbia
 }
+
+# Every GTA city uses the Toronto CMA series (member 125): StatCan does not publish
+# this table for individual municipalities. The period gets a "Toronto metro" note.
+GEO_IDS.update({slug: 125 for slug in GTA_SLUGS})
+
+# For scripts/check_statcan_ids.py: every (table, slug -> member ID) mapping in this module.
+STATCAN_TABLES = [(PRODUCT_ID, GEO_IDS)]
 
 STRUCTURE_ROW_AND_APARTMENT = 3   # Dimension 2: "Row and apartment structures of three units and over"
 UNIT_TWO_BEDROOM = 3              # Dimension 3: "Two bedroom units"
@@ -62,10 +68,10 @@ def fetch(session: requests.Session, cities: Sequence[City], store: Store) -> pd
     for slug, points in series.items():
         point = statcan.latest(points)
         if point is not None:
-            rows.append(metric_row(slug, "rent_2br", point.value, point.label))
+            rows.append(metric_row(slug, "rent_2br", point.value, metro_period(slug, point.label)))
         change = statcan.pct_change(points)
         if change is not None:
-            rows.append(metric_row(slug, "rent_change_pct", change[0], change[1]))
+            rows.append(metric_row(slug, "rent_change_pct", change[0], metro_period(slug, change[1])))
     return rows_to_frame(rows)
 
 

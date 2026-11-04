@@ -9,9 +9,10 @@
 
 {% block content %}
 <header class="site-header">
-  <div class="kicker">Canada · {{ total_cities }} largest metro areas</div>
+  <div class="kicker">Canada · {{ total_cities }} cities · the GTA city by city</div>
   <h1>{{ site_title }}</h1>
-  <p class="lede">Which Canadian city offers the best living standards? Each metro area is scored on
+  <p class="lede">Which Canadian city offers the best living standards? Canada's largest metro areas, with Toronto split
+    into its ten biggest GTA cities, are each scored on
     safety, jobs, housing cost, climate, air quality, traffic and amenities using public data that
     refreshes automatically. Set your own priorities below.</p>
 </header>
@@ -49,7 +50,7 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Metro area</th>
+          <th scope="col">City</th>
           <th scope="col">Overall</th>
           {% for c in categories %}<th scope="col" class="num" title="{{ c.description }}">{{ c.label }}</th>{% endfor %}
         </tr>
@@ -59,7 +60,7 @@
         <tr data-slug="{{ row.slug }}">
           <td class="rank-cell num">{{ row.rank|int if row.rank is not none else "—" }}</td>
           <td class="city-cell">
-            <a href="city/{{ row.slug }}.html">{{ row.name }}</a><span class="prov">{{ row.province }}</span>
+            <a href="city/{{ row.slug }}.html">{{ row.name }}</a><span class="prov">{{ row.province }}{% if row.gta %} · GTA{% endif %}</span>
             {% if row.coverage is not none and row.coverage < 0.999 %}<span class="partial">Partial data</span>{% endif %}
           </td>
           <td class="bar-cell">
@@ -72,7 +73,7 @@
         </tr>
         {% endfor %}
       </tbody>
-      <caption>All scores 0–100 (higher is better), relative to the other metro areas. “—” means no data for that category; the overall score then uses the remaining categories.</caption>
+      <caption>All scores 0–100 (higher is better), relative to the other cities. “—” means no data for that category; the overall score then uses the remaining categories.</caption>
     </table>
   </div>
 </section>
@@ -85,6 +86,11 @@
     <li><strong>Category scores.</strong> Each category is the average of its metric scores.</li>
     <li><strong>Overall score.</strong> A weighted average of category scores using your priorities. If a city has no data for a category, the other categories are re-weighted for that city.</li>
   </ol>
+  <p><strong>GTA cities.</strong> Toronto, Mississauga, Brampton, Markham, Vaughan, Oakville, Richmond Hill, Milton, Ajax and
+    Pickering are ranked separately. Each has its own weather, air quality, amenities, traffic and population figures, and
+    the crime index of its police service (several cities share one: Peel, York, Halton or Durham Regional Police).
+    Jobs and rent are only published for the whole Toronto metro area, so those values are the same for all ten and
+    are labelled “Toronto metro”. Oshawa's safety score uses Durham Regional Police.</p>
   <div class="table-scroll">
     <table>
       <thead><tr><th scope="col">Category</th><th scope="col">What it measures</th><th scope="col">Metrics</th></tr></thead>

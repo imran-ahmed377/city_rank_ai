@@ -17,13 +17,25 @@ on:
     branches:
       - main
   schedule:
-    # Hourly. GitHub often starts scheduled runs 2-4 hours late, so fixed
-    # "rush-hour" times are unreliable. Running every hour guarantees that each
-    # city is caught during its local weekday rush hours (traffic.py decides which
-    # cities to sample on each run). Minute 23 avoids the busy top of the hour.
-    # Most runs take under a minute because slow-changing sources are cached.
+    # Backup schedule. GitHub treats schedules as best-effort and in practice runs
+    # this only every ~5-7 hours, so the main hourly trigger is EXTERNAL: a
+    # cron-job.org job calls the workflow_dispatch API every hour (see README,
+    # "Reliable hourly runs"). traffic.py samples each city at most once per hour,
+    # so overlapping triggers never double-sample or exceed the TomTom quota.
     - cron: "23 * * * *"
   workflow_dispatch:
+    # Optional inputs for manual runs, e.g.:
+    #   gh workflow run city-rank.yml -f only=population,crime
+    inputs:
+      only:
+        description: "Comma-separated sources to refetch now (blank = normal run)"
+        required: false
+        default: ""
+      force:
+        description: "Refetch every source, ignoring refresh intervals"
+        type: boolean
+        required: false
+        default: false
 
 # Runs queue up instead of overlapping, because each one pushes to bot/data.
 # (cancel-in-progress is false so a scheduled run is never killed half-way.)
@@ -82,9 +94,14 @@ jobs:
       - name: Build dataset and dashboard
         env:
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+          ONLY: ${{ inputs.only }}
+          FORCE: ${{ inputs.force }}
         run: |
           set -o pipefail
-          python -m city_rank 2>&1 | tee workflow.log
+          ARGS=""
+          if [ -n "$ONLY" ]; then ARGS="--only $ONLY"; fi
+          if [ "$FORCE" = "true" ]; then ARGS="$ARGS --force"; fi
+          python -m city_rank $ARGS 2>&1 | tee workflow.log
 
       - name: Publish data to the data branch
         run: |

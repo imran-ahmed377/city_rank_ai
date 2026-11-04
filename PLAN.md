@@ -51,8 +51,9 @@ This file tracks what has been built and what comes next. Tick items off as they
 - [x] **Compare page** (2026-11-04): any 3 cities side by side, covering every section of the city pages, with shareable URLs.
 - [x] **Traffic history** (2026-11-04): readings are kept permanently (previously pruned at 120 days), grouped by local date, weekday name and morning/evening rush. City pages show every sampled day and a Monday–Friday breakdown. This also fixed a bug where evening readings in western cities were filed under the next (UTC) day.
 - [x] Data-licence attribution in the site footer (2026-11-04).
-- [ ] **Reliable rush-hour sampling.** GitHub runs the hourly schedule only every ~5–7 hours, so most cities get 0–2 traffic samples a day. Options: an external trigger (e.g. cron-job.org calling the workflow_dispatch API), or a long-running sampler job. Waiting on the owner's decision.
-- [ ] **GTA municipalities.** Decide whether to split Toronto into GTA cities (data availability differs by source; see the 2026-11-04 discussion). Waiting on the owner's decision.
+- [x] **Reliable rush-hour sampling (code side, 2026-11-04):** budget guards (once per city per hour, 2,200 readings per 24 h) and README setup steps for an external hourly trigger.
+- [ ] **Set up the cron-job.org trigger** (owner: README → "Reliable hourly runs"). Until then, GitHub's best-effort schedule runs every ~5–7 hours.
+- [x] **GTA split (2026-11-04):** Toronto replaced by its 10 largest municipalities, for 29 cities in total. Population per municipality, crime per police service, jobs and rent from the Toronto CMA (labelled). Oshawa's Safety score now comes from Durham Regional Police.
 - [x] **Licence.** MIT, with a README note that the data keeps its providers' licences (2026-11-04).
 - [ ] After the first successful run, delete the old `bot/weather-data` branch. It's no longer used.
 - [ ] Check the live site after 1–2 days. The rank history and traffic charts need a few runs before they fill in.
@@ -84,6 +85,8 @@ This file tracks what has been built and what comes next. Tick items off as they
 | 2026-10-14 | Rankings page plus one page per city | Keeps pages small; per-city weather charts live on the city pages. |
 | 2026-10-14 | Min-max scaling | Easy to explain ("best = 100, worst = 0"). Can be revisited if outliers dominate. |
 | 2026-10-26 | Hourly workflow runs | Scheduled runs started 2–4 h late and missed rush hour. Hourly runs catch every city; Actions minutes are free for public repos. |
+| 2026-11-04 | Split Toronto into 10 GTA cities in the main ranking | Owner's choice. Jobs and rent stay CMA-level (no municipal data), so GTA cities tie on those. |
+| 2026-11-04 | External hourly trigger (cron-job.org) | GitHub's schedule runs only every ~5–7 h; traffic needs every rush hour. All free. |
 | 2026-11-04 | Keep every traffic reading | The owner wants the accumulated history. Growth is a few MB per year. |
 | 2026-11-04 | Compare page uses monthly climate | Embedding all 20 cities' daily data would make the page several MB. |
 | 2026-10-14 | No income metric | The StatCan CMA income table covers only 8 of the 20 cities. |

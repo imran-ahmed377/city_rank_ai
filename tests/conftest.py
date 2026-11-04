@@ -9,7 +9,7 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
-from city_rank.cities import CITIES
+from city_rank.cities import CITIES_BY_SLUG
 from city_rank.store import Store
 
 
@@ -21,8 +21,8 @@ def store(tmp_path) -> Store:
 
 @pytest.fixture
 def three_cities():
-    """The first three configured cities (Toronto, Montréal, Vancouver)."""
-    return CITIES[:3]
+    """Toronto, Montréal and Vancouver, in that order (picked by slug, not position)."""
+    return tuple(CITIES_BY_SLUG[slug] for slug in ("toronto", "montreal", "vancouver"))
 
 
 def make_metrics(rows: list[tuple[str, str, float]], period: str = "2025") -> pd.DataFrame:

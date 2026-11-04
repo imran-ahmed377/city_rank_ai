@@ -1,12 +1,21 @@
-"""The list of cities we rank: the 20 largest Canadian metro areas (CMAs).
+"""The list of places we rank: Canada's 20 largest metro areas, with Toronto split
+into its 10 largest municipalities (the GTA) - 29 places in total.
 
 A "census metropolitan area" (CMA) is Statistics Canada's definition of a city
 plus its commuter belt. Most of our statistics (crime, jobs, population, rent)
-are published per CMA, so each City here represents a whole CMA, while the
-latitude/longitude point at its downtown core (used for weather, air quality,
+are published per CMA, so each City here normally represents a whole CMA, while
+the latitude/longitude point at its downtown core (used for weather, air quality,
 amenities and traffic sampling).
 
-Order = population rank from the 2021 Census.
+The Toronto CMA is too big and varied to rank as one place, so it is split into
+its largest municipalities (GTA_SLUGS). For those, data comes from the most
+local level StatCan publishes:
+    population  -> the municipality itself (census subdivision)
+    crime       -> its police service (Toronto, Peel, York, Halton, Durham)
+    jobs, rent  -> the whole Toronto CMA (shared, labelled "Toronto metro")
+    weather, air, amenities, traffic -> the municipality's own location
+
+Order = population rank from the 2021 Census (GTA cities in place of Toronto).
 """
 
 from __future__ import annotations
@@ -36,7 +45,18 @@ class City:
 
 
 CITIES: tuple[City, ...] = (
+    # --- Greater Toronto Area: municipalities of the Toronto CMA -------------------
     City("toronto", "Toronto", "Toronto", "ON", 43.6532, -79.3832, "America/Toronto"),
+    City("mississauga", "Mississauga", "Toronto", "ON", 43.5890, -79.6441, "America/Toronto"),
+    City("brampton", "Brampton", "Toronto", "ON", 43.6853, -79.7599, "America/Toronto"),
+    City("markham", "Markham", "Toronto", "ON", 43.8564, -79.3375, "America/Toronto"),
+    City("vaughan", "Vaughan", "Toronto", "ON", 43.7942, -79.5268, "America/Toronto"),
+    City("oakville", "Oakville", "Toronto", "ON", 43.4675, -79.6877, "America/Toronto"),
+    City("richmond-hill", "Richmond Hill", "Toronto", "ON", 43.8828, -79.4403, "America/Toronto"),
+    City("milton", "Milton", "Toronto", "ON", 43.5183, -79.8774, "America/Toronto"),
+    City("ajax", "Ajax", "Toronto", "ON", 43.8509, -79.0204, "America/Toronto"),
+    City("pickering", "Pickering", "Toronto", "ON", 43.8384, -79.0868, "America/Toronto"),
+    # --- Other metro areas (whole CMAs) ----------------------------------------------
     City("montreal", "Montréal", "Montréal", "QC", 45.5017, -73.5673, "America/Toronto"),
     City("vancouver", "Vancouver", "Vancouver", "BC", 49.2827, -123.1207, "America/Vancouver"),
     City("ottawa", "Ottawa", "Ottawa–Gatineau", "ON", 45.4215, -75.6972, "America/Toronto"),
@@ -60,3 +80,19 @@ CITIES: tuple[City, ...] = (
 
 # Quick lookup by slug, e.g. CITIES_BY_SLUG["toronto"].
 CITIES_BY_SLUG: dict[str, City] = {city.slug: city for city in CITIES}
+
+# The GTA municipalities (all inside the Toronto CMA). Sources use this to know
+# when a value is shared Toronto-metro data rather than the city's own.
+GTA_SLUGS: frozenset[str] = frozenset(
+    ("toronto", "mississauga", "brampton", "markham", "vaughan", "oakville",
+     "richmond-hill", "milton", "ajax", "pickering")
+)
+TORONTO_METRO_NOTE = "Toronto metro"   # appended to the period of shared values
+
+
+def metro_period(slug: str, period: str) -> str:
+    """Label a value that a GTA city shares with the whole Toronto CMA.
+
+    '2026-09' -> '2026-09 · Toronto metro' for GTA cities; unchanged for others.
+    """
+    return f"{period} · {TORONTO_METRO_NOTE}" if slug in GTA_SLUGS else period

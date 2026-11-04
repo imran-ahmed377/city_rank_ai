@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-Rank the 20 largest Canadian metro areas on **living standards** using only
+Rank Canada's largest cities on **living standards** using only
 public data, and publish the result as a static website that updates itself
 every hour through GitHub Actions.
 
@@ -14,18 +14,30 @@ The ranking must be:
 
 ## 2. Cities in scope
 
-The 20 largest census metropolitan areas (CMAs) by 2021 Census population.
-They are defined in `city_rank/cities.py`:
+29 places, defined in `city_rank/cities.py`: the 20 largest census metropolitan
+areas (CMAs) by 2021 Census population, with the Toronto CMA split into its ten
+largest municipalities (since 2026-11-04).
 
-Toronto, Montréal, Vancouver, Ottawa–Gatineau, Calgary, Edmonton, Québec,
-Winnipeg, Hamilton, Kitchener–Cambridge–Waterloo, London, Halifax,
-St. Catharines–Niagara, Windsor, Oshawa, Victoria, Saskatoon, Regina,
-Sherbrooke, Kelowna.
+- **GTA municipalities (10):** Toronto, Mississauga, Brampton, Markham, Vaughan, Oakville, Richmond Hill, Milton, Ajax, Pickering.
+- **Other metro areas (19):** Montréal, Vancouver, Ottawa–Gatineau, Calgary, Edmonton, Québec, Winnipeg, Hamilton, Kitchener–Cambridge–Waterloo, London, Halifax, St. Catharines–Niagara, Windsor, Oshawa, Victoria, Saskatoon, Regina, Sherbrooke, Kelowna.
 
 Each city has two location roles:
 
-- **The whole CMA** for StatCan statistics (crime, jobs, population, rent).
-- **A downtown point** (latitude/longitude) for weather, air quality, amenities and traffic sampling.
+- **Its statistical area** for StatCan statistics: the whole CMA for metro areas; for GTA cities, the most local level each table offers (see below).
+- **A downtown point** (latitude/longitude) for weather, air quality, amenities and traffic sampling. Every GTA city has its own point.
+
+**Data level for GTA cities**
+
+| Data | Level used |
+|---|---|
+| Weather, climate, air quality, amenities, traffic | The city's own location |
+| Population and growth | The municipality (StatCan 17-10-0155-01) |
+| Crime | Its police service (StatCan 35-10-0188-01): Toronto Police; Peel (Mississauga, Brampton); York (Markham, Vaughan, Richmond Hill); Halton (Oakville, Milton); Durham (Ajax, Pickering) |
+| Jobs, rent | The whole Toronto CMA. StatCan publishes these only per CMA (Milton's own rent series exists but is empty). Shown with the note "Toronto metro". |
+
+Cities that share a value tie on that metric. History note: before 2026-11-04, the
+`toronto` slug meant the whole Toronto CMA, ranked out of 20, so Toronto's rank
+history changes meaning on that date.
 
 ## 3. Categories, metrics and sources
 
@@ -33,8 +45,8 @@ Default weights are importance levels from 0 to 10. The percentage is each weigh
 
 | Category | Default weight | Metric (direction) | Source | Source refresh | Our refresh |
 |---|---|---|---|---|---|
-| Safety | 4 (20%) | Crime Severity Index (↓), Violent CSI (↓) | StatCan 35-10-0026-01 | yearly | weekly check |
-| Jobs & economy | 4 (20%) | Unemployment rate (↓), Employment rate (↑), Population growth (↑) | StatCan 14-10-0459-01, 17-10-0148-01 | monthly / yearly | daily / weekly |
+| Safety | 4 (20%) | Crime Severity Index (↓), Violent CSI (↓) | StatCan 35-10-0026-01 (CMAs), 35-10-0188-01 (Ontario police services) | yearly | weekly check |
+| Jobs & economy | 4 (20%) | Unemployment rate (↓), Employment rate (↑), Population growth (↑) | StatCan 14-10-0459-01, 17-10-0148-01, 17-10-0155-01 | monthly / yearly | daily / weekly |
 | Housing cost | 4 (20%) | Average 2-bedroom rent (↓), Rent change % per year (↓) | CMHC via StatCan 34-10-0133-01 | yearly (October survey) | weekly check |
 | Climate | 3 (15%) | Days below −20 °C (↓), Days above 30 °C (↓), Snowfall (↓), Wet days ≥1 mm (↓), Sunshine hours (↑) | Open-Meteo archive, past 365 days | daily | every 12 h |
 | Air quality | 2 (10%) | PM2.5 90-day mean (↓) | Open-Meteo Air Quality API | hourly | every 6 h |
@@ -49,18 +61,19 @@ Default weights are importance levels from 0 to 10. The percentage is each weigh
 - Current temperature, humidity, wind, precipitation and conditions
 - Number of traffic samples
 
-**Known gap:** StatCan does not publish a Crime Severity Index for Oshawa (it is policed by Durham Regional Police). Oshawa therefore has no Safety score (see §4.3).
+**Oshawa crime:** StatCan publishes no CMA-level Crime Severity Index for Oshawa, so the Durham Regional Police index is used (labelled as such). Durham also covers Whitby, Clarington, Ajax and Pickering.
 
 ### 3.1 Traffic sampling
 
 - **Sample points:** 9 per city, the downtown centre plus 8 compass points 4 km away. TomTom snaps each point to the nearest major road segment.
 - **When:** a city is sampled only during its local weekday rush hours, 07:00–09:59 and 16:00–18:59.
-- **Schedule:** the workflow runs every hour. GitHub often starts scheduled runs 2–4 hours late, so fixed times can't be relied on; with hourly runs, each city is sampled several times inside each of its rush-hour windows.
+- **Schedule:** an external cron (cron-job.org) triggers the workflow every hour through the `workflow_dispatch` API. GitHub's own hourly schedule stays as a backup, but in practice GitHub runs it only every ~5–7 hours. With reliable hourly runs, each city is sampled up to 3 times in each rush window.
+- **Guards:** a city sampled in the last 45 minutes is skipped, so overlapping triggers never double-sample. No new requests are made once 2,200 readings were taken in the last 24 hours.
 - **Per reading:** congestion % = (1 − current speed ÷ free-flow speed) × 100, clipped at 0.
 - **Excluded readings:** closed roads and readings with TomTom confidence below 0.5.
 - **The metric:** the mean of all valid readings over the last 30 days.
 - **History:** every raw reading is kept permanently (no pruning). City pages summarise the whole history by the city's *local* date and weekday, split into morning and evening rush.
-- **Budget:** at most about 1,080 requests a day (20 cities × 6 rush-hour runs × 9 points), against TomTom's free limit of 2,500.
+- **Budget:** at most about 1,570 requests a day (29 cities × 6 rush-hour runs × 9 points), against TomTom's free limit of 2,500. The 2,200 cap is a hard stop below the limit.
 
 ## 4. Scoring
 
@@ -186,7 +199,7 @@ The site is static, generated with Jinja2 into `docs/`, and served by GitHub Pag
 
 The workflow is `.github/workflows/city-rank.yml`.
 
-**Triggers:** a push to `main`, an hourly cron run, and manual dispatch.
+**Triggers:** a push to `main`; an hourly external trigger (cron-job.org → `workflow_dispatch` API); GitHub's own hourly schedule as a backup; and manual dispatch. Manual runs accept `only` (comma-separated sources to refetch) and `force` inputs.
 
 **Steps:**
 1. Install dependencies.

@@ -109,7 +109,10 @@ def fetch_series(
     """
     if not coordinates:
         return {}
-    body = [{"productId": product_id, "coordinate": coord, "latestN": latest_n} for coord in coordinates.values()]
+    # Several keys may share one series (e.g. every GTA city uses the Toronto CMA
+    # unemployment rate), so each distinct coordinate is requested only once.
+    unique = sorted(set(coordinates.values()))
+    body = [{"productId": product_id, "coordinate": coord, "latestN": latest_n} for coord in unique]
     response = session.post(DATA_ENDPOINT, json=body, timeout=HTTP_TIMEOUT)
     response.raise_for_status()
     by_coordinate = parse_response(response.json())
