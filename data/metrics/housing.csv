@@ -1,4 +1,8 @@
 city,metric,value,period,source,fetched_at
+ajax,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+ajax,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+brampton,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+brampton,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 calgary,rent_2br,1908.0,2025,housing,2026-10-29T16:59:26Z
 calgary,rent_change_pct,1.71,2024–2025,housing,2026-10-29T16:59:26Z
 edmonton,rent_2br,1598.0,2025,housing,2026-10-29T16:59:26Z
@@ -13,16 +17,28 @@ kitchener-waterloo,rent_2br,1816.0,2025,housing,2026-10-29T16:59:26Z
 kitchener-waterloo,rent_change_pct,3.95,2024–2025,housing,2026-10-29T16:59:26Z
 london,rent_2br,1645.0,2025,housing,2026-10-29T16:59:26Z
 london,rent_change_pct,6.75,2024–2025,housing,2026-10-29T16:59:26Z
+markham,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+markham,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+milton,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+milton,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+mississauga,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+mississauga,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 montreal,rent_2br,1346.0,2025,housing,2026-10-29T16:59:26Z
 montreal,rent_change_pct,14.46,2024–2025,housing,2026-10-29T16:59:26Z
+oakville,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+oakville,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 oshawa,rent_2br,1762.0,2025,housing,2026-10-29T16:59:26Z
 oshawa,rent_change_pct,4.26,2024–2025,housing,2026-10-29T16:59:26Z
 ottawa,rent_2br,1757.0,2025,housing,2026-10-29T16:59:26Z
 ottawa,rent_change_pct,4.33,2024–2025,housing,2026-10-29T16:59:26Z
+pickering,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+pickering,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 quebec-city,rent_2br,1276.0,2025,housing,2026-10-29T16:59:26Z
 quebec-city,rent_change_pct,10.09,2024–2025,housing,2026-10-29T16:59:26Z
 regina,rent_2br,1478.0,2025,housing,2026-10-29T16:59:26Z
 regina,rent_change_pct,4.16,2024–2025,housing,2026-10-29T16:59:26Z
+richmond-hill,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+richmond-hill,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 saskatoon,rent_2br,1559.0,2025,housing,2026-10-29T16:59:26Z
 saskatoon,rent_change_pct,5.41,2024–2025,housing,2026-10-29T16:59:26Z
 sherbrooke,rent_2br,1062.0,2025,housing,2026-10-29T16:59:26Z
@@ -33,6 +49,8 @@ toronto,rent_2br,2045.0,2025,housing,2026-10-29T16:59:26Z
 toronto,rent_change_pct,3.7,2024–2025,housing,2026-10-29T16:59:26Z
 vancouver,rent_2br,2364.0,2025,housing,2026-10-29T16:59:26Z
 vancouver,rent_change_pct,2.2,2024–2025,housing,2026-10-29T16:59:26Z
+vaughan,rent_2br,2045.0,2025 · Toronto metro,housing,2026-11-04T18:08:56Z
+vaughan,rent_change_pct,3.7,2024–2025 · Toronto metro,housing,2026-11-04T18:08:56Z
 victoria,rent_2br,2121.0,2025,housing,2026-10-29T16:59:26Z
 victoria,rent_change_pct,6.32,2024–2025,housing,2026-10-29T16:59:26Z
 windsor,rent_2br,1451.0,2025,housing,2026-10-29T16:59:26Z

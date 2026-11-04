@@ -1,4 +1,8 @@
 city,metric,value,period,source,fetched_at
+ajax,crime_severity_index,43.18,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
+ajax,violent_crime_severity_index,59.2,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
+brampton,crime_severity_index,59.41,2025 · Peel Regional Police,crime,2026-11-04T18:08:56Z
+brampton,violent_crime_severity_index,76.9,2025 · Peel Regional Police,crime,2026-11-04T18:08:56Z
 calgary,crime_severity_index,61.66,2025,crime,2026-10-29T16:59:26Z
 calgary,violent_crime_severity_index,68.49,2025,crime,2026-10-29T16:59:26Z
 edmonton,crime_severity_index,95.55,2025,crime,2026-10-29T16:59:26Z
@@ -13,14 +17,28 @@ kitchener-waterloo,crime_severity_index,66.82,2025,crime,2026-10-29T16:59:26Z
 kitchener-waterloo,violent_crime_severity_index,85.09,2025,crime,2026-10-29T16:59:26Z
 london,crime_severity_index,65.95,2025,crime,2026-10-29T16:59:26Z
 london,violent_crime_severity_index,79.59,2025,crime,2026-10-29T16:59:26Z
+markham,crime_severity_index,50.28,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
+markham,violent_crime_severity_index,63.17,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
+milton,crime_severity_index,30.61,2025 · Halton Regional Police,crime,2026-11-04T18:08:56Z
+milton,violent_crime_severity_index,26.26,2025 · Halton Regional Police,crime,2026-11-04T18:08:56Z
+mississauga,crime_severity_index,59.41,2025 · Peel Regional Police,crime,2026-11-04T18:08:56Z
+mississauga,violent_crime_severity_index,76.9,2025 · Peel Regional Police,crime,2026-11-04T18:08:56Z
 montreal,crime_severity_index,61.29,2025,crime,2026-10-29T16:59:26Z
 montreal,violent_crime_severity_index,92.04,2025,crime,2026-10-29T16:59:26Z
+oakville,crime_severity_index,30.61,2025 · Halton Regional Police,crime,2026-11-04T18:08:56Z
+oakville,violent_crime_severity_index,26.26,2025 · Halton Regional Police,crime,2026-11-04T18:08:56Z
+oshawa,crime_severity_index,43.18,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
+oshawa,violent_crime_severity_index,59.2,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
 ottawa,crime_severity_index,52.76,2025,crime,2026-10-29T16:59:26Z
 ottawa,violent_crime_severity_index,68.78,2025,crime,2026-10-29T16:59:26Z
+pickering,crime_severity_index,43.18,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
+pickering,violent_crime_severity_index,59.2,2025 · Durham Regional Police,crime,2026-11-04T18:08:56Z
 quebec-city,crime_severity_index,54.97,2025,crime,2026-10-29T16:59:26Z
 quebec-city,violent_crime_severity_index,81.02,2025,crime,2026-10-29T16:59:26Z
 regina,crime_severity_index,87.36,2025,crime,2026-10-29T16:59:26Z
 regina,violent_crime_severity_index,117.65,2025,crime,2026-10-29T16:59:26Z
+richmond-hill,crime_severity_index,50.28,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
+richmond-hill,violent_crime_severity_index,63.17,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
 saskatoon,crime_severity_index,98.87,2025,crime,2026-10-29T16:59:26Z
 saskatoon,violent_crime_severity_index,130.64,2025,crime,2026-10-29T16:59:26Z
 sherbrooke,crime_severity_index,50.25,2025,crime,2026-10-29T16:59:26Z
@@ -31,6 +49,8 @@ toronto,crime_severity_index,54.99,2025,crime,2026-10-29T16:59:26Z
 toronto,violent_crime_severity_index,71.57,2025,crime,2026-10-29T16:59:26Z
 vancouver,crime_severity_index,83.51,2025,crime,2026-10-29T16:59:26Z
 vancouver,violent_crime_severity_index,80.67,2025,crime,2026-10-29T16:59:26Z
+vaughan,crime_severity_index,50.28,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
+vaughan,violent_crime_severity_index,63.17,2025 · York Regional Police,crime,2026-11-04T18:08:56Z
 victoria,crime_severity_index,74.57,2025,crime,2026-10-29T16:59:26Z
 victoria,violent_crime_severity_index,85.42,2025,crime,2026-10-29T16:59:26Z
 windsor,crime_severity_index,55.39,2025,crime,2026-10-29T16:59:26Z
