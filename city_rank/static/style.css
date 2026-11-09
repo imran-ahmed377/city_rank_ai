@@ -297,6 +297,11 @@ footer { margin-top: 2rem; color: var(--ink-2); font-size: 0.85rem; }
   padding: 0.45rem 0.6rem; border-radius: 12px;
   border: 1px solid var(--axis); background: var(--glass-inner); cursor: pointer;
 }
+/* The open list is drawn by the browser, which can't show the translucent glass
+   fill and falls back to white while the text stays white in dark mode. Give the
+   options a solid themed background so they are readable in both themes. */
+.city-select option { background: var(--surface); color: var(--ink); font-weight: 400; }
+.city-select option:checked { background: var(--track); font-weight: 600; }
 .pick-meta { margin-top: 0.45rem; }
 .pick-name { font-size: 1.35rem; font-weight: 700; line-height: 1.2; }
 
