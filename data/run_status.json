@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T02:46:38Z",
+  "generated_at": "2026-11-09T11:52:05Z",
   "sources": [
     {
       "source": "weather",
@@ -8,25 +8,25 @@
       "state": "updated",
       "rows": 145,
       "cities": 29,
-      "fetched_at": "2026-11-09T02:46:38Z",
-      "seconds": 1.7
+      "fetched_at": "2026-11-09T11:52:05Z",
+      "seconds": 1.2
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 174,
-      "cities": 29,
-      "fetched_at": "2026-11-09T02:46:38Z",
-      "seconds": 4.6
+      "state": "cached",
+      "fetched_at": "2026-11-09T02:46:38Z"
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "cached",
-      "fetched_at": "2026-11-08T22:58:25Z"
+      "state": "updated",
+      "rows": 58,
+      "cities": 29,
+      "fetched_at": "2026-11-09T11:52:05Z",
+      "seconds": 3.5
     },
     {
       "source": "crime",
@@ -39,11 +39,8 @@
       "source": "jobs",
       "title": "Statistics Canada – Labour Force Survey (14-10-0459-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410045901",
-      "state": "updated",
-      "rows": 58,
-      "cities": 29,
-      "fetched_at": "2026-11-09T02:46:38Z",
-      "seconds": 0.8
+      "state": "cached",
+      "fetched_at": "2026-11-09T02:46:38Z"
     },
     {
       "source": "population",
@@ -73,8 +70,8 @@
       "state": "updated",
       "rows": 58,
       "cities": 29,
-      "fetched_at": "2026-11-09T02:46:38Z",
-      "seconds": 0.0
+      "fetched_at": "2026-11-09T11:52:05Z",
+      "seconds": 0.6
     }
   ]
 }
