@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T18:19:32Z",
+  "generated_at": "2026-11-09T22:32:42Z",
   "sources": [
     {
       "source": "weather",
@@ -8,8 +8,8 @@
       "state": "updated",
       "rows": 145,
       "cities": 29,
-      "fetched_at": "2026-11-09T18:19:32Z",
-      "seconds": 4.1
+      "fetched_at": "2026-11-09T22:32:42Z",
+      "seconds": 4.0
     },
     {
       "source": "climate",
@@ -67,8 +67,8 @@
       "state": "updated",
       "rows": 58,
       "cities": 29,
-      "fetched_at": "2026-11-09T18:19:32Z",
-      "seconds": 0.0
+      "fetched_at": "2026-11-09T22:32:42Z",
+      "seconds": 5.7
     }
   ]
 }
