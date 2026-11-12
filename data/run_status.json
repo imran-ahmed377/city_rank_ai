@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T22:53:49Z",
+  "generated_at": "2026-11-12T03:56:18Z",
   "sources": [
     {
       "source": "weather",
@@ -8,38 +8,29 @@
       "state": "updated",
       "rows": 145,
       "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 1.7
+      "fetched_at": "2026-11-12T03:56:18Z",
+      "seconds": 3.5
     },
     {
       "source": "climate",
       "title": "Open-Meteo Historical Weather API",
       "url": "https://open-meteo.com/en/docs/historical-weather-api",
-      "state": "updated",
-      "rows": 174,
-      "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 5.2
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "air_quality",
       "title": "Open-Meteo Air Quality API",
       "url": "https://open-meteo.com/en/docs/air-quality-api",
-      "state": "updated",
-      "rows": 58,
-      "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 4.1
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "crime",
       "title": "Statistics Canada – Crime Severity Index (35-10-0026-01, 35-10-0188-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3510002601",
-      "state": "updated",
-      "rows": 58,
-      "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 1.0
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "jobs",
@@ -52,31 +43,22 @@
       "source": "population",
       "title": "Statistics Canada – Population estimates (17-10-0148-01, 17-10-0155-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710014801",
-      "state": "updated",
-      "rows": 58,
-      "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 0.7
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "housing",
       "title": "CMHC average rents via Statistics Canada (34-10-0133-01)",
       "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=3410013301",
-      "state": "updated",
-      "rows": 58,
-      "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 0.4
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "amenities",
       "title": "OpenStreetMap via Overpass API",
       "url": "https://wiki.openstreetmap.org/wiki/Overpass_API",
-      "state": "updated",
-      "rows": 52,
-      "cities": 13,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 1223.1
+      "state": "cached",
+      "fetched_at": "2026-11-11T22:53:49Z"
     },
     {
       "source": "traffic",
@@ -85,8 +67,8 @@
       "state": "updated",
       "rows": 58,
       "cities": 29,
-      "fetched_at": "2026-11-11T22:53:49Z",
-      "seconds": 13.3
+      "fetched_at": "2026-11-12T03:56:18Z",
+      "seconds": 0.0
     }
   ]
 }
