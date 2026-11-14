@@ -1,59 +1,59 @@
 city,metric,value,period,source,fetched_at
-ajax,pm25_mean_90d,5.83,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-ajax,us_aqi_current,28.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-brampton,pm25_mean_90d,7.53,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-brampton,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-calgary,pm25_mean_90d,8.68,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-calgary,us_aqi_current,58.0,2026-11-13T10:00,air_quality,2026-11-13T17:54:29Z
-edmonton,pm25_mean_90d,7.09,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-edmonton,us_aqi_current,60.0,2026-11-13T10:00,air_quality,2026-11-13T17:54:29Z
-halifax,pm25_mean_90d,4.55,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-halifax,us_aqi_current,33.0,2026-11-13T13:00,air_quality,2026-11-13T17:54:29Z
-hamilton,pm25_mean_90d,6.26,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-hamilton,us_aqi_current,25.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-kelowna,pm25_mean_90d,16.6,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-kelowna,us_aqi_current,77.0,2026-11-13T09:00,air_quality,2026-11-13T17:54:29Z
-kitchener-waterloo,pm25_mean_90d,5.2,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-kitchener-waterloo,us_aqi_current,25.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-london,pm25_mean_90d,5.17,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-london,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-markham,pm25_mean_90d,5.83,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-markham,us_aqi_current,28.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-milton,pm25_mean_90d,6.3,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-milton,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-mississauga,pm25_mean_90d,7.53,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-mississauga,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-montreal,pm25_mean_90d,8.42,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-montreal,us_aqi_current,48.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-oakville,pm25_mean_90d,7.53,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-oakville,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-oshawa,pm25_mean_90d,5.08,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-oshawa,us_aqi_current,29.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-ottawa,pm25_mean_90d,5.1,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-ottawa,us_aqi_current,27.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-pickering,pm25_mean_90d,5.83,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-pickering,us_aqi_current,28.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-quebec-city,pm25_mean_90d,7.12,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-quebec-city,us_aqi_current,59.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-regina,pm25_mean_90d,5.1,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-regina,us_aqi_current,53.0,2026-11-13T11:00,air_quality,2026-11-13T17:54:29Z
-richmond-hill,pm25_mean_90d,5.94,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-richmond-hill,us_aqi_current,25.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-saskatoon,pm25_mean_90d,5.04,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-saskatoon,us_aqi_current,52.0,2026-11-13T11:00,air_quality,2026-11-13T17:54:29Z
-sherbrooke,pm25_mean_90d,5.28,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-sherbrooke,us_aqi_current,34.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-st-catharines-niagara,pm25_mean_90d,6.07,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-st-catharines-niagara,us_aqi_current,31.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-toronto,pm25_mean_90d,6.83,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-toronto,us_aqi_current,30.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-vancouver,pm25_mean_90d,16.57,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-vancouver,us_aqi_current,66.0,2026-11-13T09:00,air_quality,2026-11-13T17:54:29Z
-vaughan,pm25_mean_90d,7.53,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-vaughan,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-victoria,pm25_mean_90d,9.1,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-victoria,us_aqi_current,49.0,2026-11-13T09:00,air_quality,2026-11-13T17:54:29Z
-windsor,pm25_mean_90d,10.0,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-windsor,us_aqi_current,24.0,2026-11-13T12:00,air_quality,2026-11-13T17:54:29Z
-winnipeg,pm25_mean_90d,5.15,2026-08-15 to 2026-11-13,air_quality,2026-11-13T17:54:29Z
-winnipeg,us_aqi_current,34.0,2026-11-13T11:00,air_quality,2026-11-13T17:54:29Z
+ajax,pm25_mean_90d,5.83,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+ajax,us_aqi_current,25.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+brampton,pm25_mean_90d,7.53,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+brampton,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+calgary,pm25_mean_90d,8.76,2026-08-15 to 2026-11-13,air_quality,2026-11-14T06:46:01Z
+calgary,us_aqi_current,67.0,2026-11-13T23:00,air_quality,2026-11-14T06:46:01Z
+edmonton,pm25_mean_90d,7.16,2026-08-15 to 2026-11-13,air_quality,2026-11-14T06:46:01Z
+edmonton,us_aqi_current,63.0,2026-11-13T23:00,air_quality,2026-11-14T06:46:01Z
+halifax,pm25_mean_90d,4.52,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+halifax,us_aqi_current,29.0,2026-11-14T02:00,air_quality,2026-11-14T06:46:01Z
+hamilton,pm25_mean_90d,6.17,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+hamilton,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+kelowna,pm25_mean_90d,16.64,2026-08-15 to 2026-11-13,air_quality,2026-11-14T06:46:01Z
+kelowna,us_aqi_current,79.0,2026-11-13T22:00,air_quality,2026-11-14T06:46:01Z
+kitchener-waterloo,pm25_mean_90d,5.17,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+kitchener-waterloo,us_aqi_current,24.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+london,pm25_mean_90d,5.1,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+london,us_aqi_current,26.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+markham,pm25_mean_90d,5.83,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+markham,us_aqi_current,25.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+milton,pm25_mean_90d,6.27,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+milton,us_aqi_current,19.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+mississauga,pm25_mean_90d,7.53,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+mississauga,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+montreal,pm25_mean_90d,8.38,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+montreal,us_aqi_current,40.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+oakville,pm25_mean_90d,7.53,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+oakville,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+oshawa,pm25_mean_90d,5.08,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+oshawa,us_aqi_current,26.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+ottawa,pm25_mean_90d,5.07,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+ottawa,us_aqi_current,23.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+pickering,pm25_mean_90d,5.83,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+pickering,us_aqi_current,25.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+quebec-city,pm25_mean_90d,7.06,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+quebec-city,us_aqi_current,55.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+regina,pm25_mean_90d,5.13,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+regina,us_aqi_current,55.0,2026-11-14T00:00,air_quality,2026-11-14T06:46:01Z
+richmond-hill,pm25_mean_90d,5.93,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+richmond-hill,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+saskatoon,pm25_mean_90d,5.07,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+saskatoon,us_aqi_current,52.0,2026-11-14T00:00,air_quality,2026-11-14T06:46:01Z
+sherbrooke,pm25_mean_90d,5.24,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+sherbrooke,us_aqi_current,31.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+st-catharines-niagara,pm25_mean_90d,6.08,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+st-catharines-niagara,us_aqi_current,26.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+toronto,pm25_mean_90d,6.85,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+toronto,us_aqi_current,27.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+vancouver,pm25_mean_90d,16.6,2026-08-15 to 2026-11-13,air_quality,2026-11-14T06:46:01Z
+vancouver,us_aqi_current,72.0,2026-11-13T22:00,air_quality,2026-11-14T06:46:01Z
+vaughan,pm25_mean_90d,7.53,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+vaughan,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+victoria,pm25_mean_90d,9.09,2026-08-15 to 2026-11-13,air_quality,2026-11-14T06:46:01Z
+victoria,us_aqi_current,47.0,2026-11-13T22:00,air_quality,2026-11-14T06:46:01Z
+windsor,pm25_mean_90d,9.89,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+windsor,us_aqi_current,21.0,2026-11-14T01:00,air_quality,2026-11-14T06:46:01Z
+winnipeg,pm25_mean_90d,5.13,2026-08-16 to 2026-11-14,air_quality,2026-11-14T06:46:01Z
+winnipeg,us_aqi_current,28.0,2026-11-14T00:00,air_quality,2026-11-14T06:46:01Z
