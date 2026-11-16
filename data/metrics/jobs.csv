@@ -1,59 +1,59 @@
 city,metric,value,period,source,fetched_at
-ajax,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-ajax,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-brampton,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-brampton,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-calgary,employment_rate,66.7,2026-10,jobs,2026-11-14T23:11:50Z
-calgary,unemployment_rate,6.6,2026-10,jobs,2026-11-14T23:11:50Z
-edmonton,employment_rate,63.8,2026-10,jobs,2026-11-14T23:11:50Z
-edmonton,unemployment_rate,7.1,2026-10,jobs,2026-11-14T23:11:50Z
-halifax,employment_rate,65.0,2026-10,jobs,2026-11-14T23:11:50Z
-halifax,unemployment_rate,5.4,2026-10,jobs,2026-11-14T23:11:50Z
-hamilton,employment_rate,60.7,2026-10,jobs,2026-11-14T23:11:50Z
-hamilton,unemployment_rate,7.6,2026-10,jobs,2026-11-14T23:11:50Z
-kelowna,employment_rate,61.0,2026-10,jobs,2026-11-14T23:11:50Z
-kelowna,unemployment_rate,9.6,2026-10,jobs,2026-11-14T23:11:50Z
-kitchener-waterloo,employment_rate,65.2,2026-10,jobs,2026-11-14T23:11:50Z
-kitchener-waterloo,unemployment_rate,7.1,2026-10,jobs,2026-11-14T23:11:50Z
-london,employment_rate,57.4,2026-10,jobs,2026-11-14T23:11:50Z
-london,unemployment_rate,8.1,2026-10,jobs,2026-11-14T23:11:50Z
-markham,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-markham,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-milton,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-milton,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-mississauga,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-mississauga,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-montreal,employment_rate,62.1,2026-10,jobs,2026-11-14T23:11:50Z
-montreal,unemployment_rate,6.9,2026-10,jobs,2026-11-14T23:11:50Z
-oakville,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-oakville,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-oshawa,employment_rate,61.6,2026-10,jobs,2026-11-14T23:11:50Z
-oshawa,unemployment_rate,8.9,2026-10,jobs,2026-11-14T23:11:50Z
-ottawa,employment_rate,60.7,2026-10,jobs,2026-11-14T23:11:50Z
-ottawa,unemployment_rate,7.1,2026-10,jobs,2026-11-14T23:11:50Z
-pickering,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-pickering,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-quebec-city,employment_rate,63.4,2026-10,jobs,2026-11-14T23:11:50Z
-quebec-city,unemployment_rate,4.5,2026-10,jobs,2026-11-14T23:11:50Z
-regina,employment_rate,65.7,2026-10,jobs,2026-11-14T23:11:50Z
-regina,unemployment_rate,5.9,2026-10,jobs,2026-11-14T23:11:50Z
-richmond-hill,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-richmond-hill,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-saskatoon,employment_rate,64.5,2026-10,jobs,2026-11-14T23:11:50Z
-saskatoon,unemployment_rate,5.9,2026-10,jobs,2026-11-14T23:11:50Z
-sherbrooke,employment_rate,59.5,2026-10,jobs,2026-11-14T23:11:50Z
-sherbrooke,unemployment_rate,4.2,2026-10,jobs,2026-11-14T23:11:50Z
-st-catharines-niagara,employment_rate,54.5,2026-10,jobs,2026-11-14T23:11:50Z
-st-catharines-niagara,unemployment_rate,7.1,2026-10,jobs,2026-11-14T23:11:50Z
-toronto,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-toronto,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-vancouver,employment_rate,63.4,2026-10,jobs,2026-11-14T23:11:50Z
-vancouver,unemployment_rate,6.7,2026-10,jobs,2026-11-14T23:11:50Z
-vaughan,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-vaughan,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-14T23:11:50Z
-victoria,employment_rate,61.4,2026-10,jobs,2026-11-14T23:11:50Z
-victoria,unemployment_rate,4.8,2026-10,jobs,2026-11-14T23:11:50Z
-windsor,employment_rate,59.4,2026-10,jobs,2026-11-14T23:11:50Z
-windsor,unemployment_rate,7.5,2026-10,jobs,2026-11-14T23:11:50Z
-winnipeg,employment_rate,64.3,2026-10,jobs,2026-11-14T23:11:50Z
-winnipeg,unemployment_rate,5.0,2026-10,jobs,2026-11-14T23:11:50Z
+ajax,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+ajax,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+brampton,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+brampton,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+calgary,employment_rate,66.7,2026-10,jobs,2026-11-16T02:53:08Z
+calgary,unemployment_rate,6.6,2026-10,jobs,2026-11-16T02:53:08Z
+edmonton,employment_rate,63.8,2026-10,jobs,2026-11-16T02:53:08Z
+edmonton,unemployment_rate,7.1,2026-10,jobs,2026-11-16T02:53:08Z
+halifax,employment_rate,65.0,2026-10,jobs,2026-11-16T02:53:08Z
+halifax,unemployment_rate,5.4,2026-10,jobs,2026-11-16T02:53:08Z
+hamilton,employment_rate,60.7,2026-10,jobs,2026-11-16T02:53:08Z
+hamilton,unemployment_rate,7.6,2026-10,jobs,2026-11-16T02:53:08Z
+kelowna,employment_rate,61.0,2026-10,jobs,2026-11-16T02:53:08Z
+kelowna,unemployment_rate,9.6,2026-10,jobs,2026-11-16T02:53:08Z
+kitchener-waterloo,employment_rate,65.2,2026-10,jobs,2026-11-16T02:53:08Z
+kitchener-waterloo,unemployment_rate,7.1,2026-10,jobs,2026-11-16T02:53:08Z
+london,employment_rate,57.4,2026-10,jobs,2026-11-16T02:53:08Z
+london,unemployment_rate,8.1,2026-10,jobs,2026-11-16T02:53:08Z
+markham,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+markham,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+milton,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+milton,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+mississauga,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+mississauga,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+montreal,employment_rate,62.1,2026-10,jobs,2026-11-16T02:53:08Z
+montreal,unemployment_rate,6.9,2026-10,jobs,2026-11-16T02:53:08Z
+oakville,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+oakville,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+oshawa,employment_rate,61.6,2026-10,jobs,2026-11-16T02:53:08Z
+oshawa,unemployment_rate,8.9,2026-10,jobs,2026-11-16T02:53:08Z
+ottawa,employment_rate,60.7,2026-10,jobs,2026-11-16T02:53:08Z
+ottawa,unemployment_rate,7.1,2026-10,jobs,2026-11-16T02:53:08Z
+pickering,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+pickering,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+quebec-city,employment_rate,63.4,2026-10,jobs,2026-11-16T02:53:08Z
+quebec-city,unemployment_rate,4.5,2026-10,jobs,2026-11-16T02:53:08Z
+regina,employment_rate,65.7,2026-10,jobs,2026-11-16T02:53:08Z
+regina,unemployment_rate,5.9,2026-10,jobs,2026-11-16T02:53:08Z
+richmond-hill,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+richmond-hill,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+saskatoon,employment_rate,64.5,2026-10,jobs,2026-11-16T02:53:08Z
+saskatoon,unemployment_rate,5.9,2026-10,jobs,2026-11-16T02:53:08Z
+sherbrooke,employment_rate,59.5,2026-10,jobs,2026-11-16T02:53:08Z
+sherbrooke,unemployment_rate,4.2,2026-10,jobs,2026-11-16T02:53:08Z
+st-catharines-niagara,employment_rate,54.5,2026-10,jobs,2026-11-16T02:53:08Z
+st-catharines-niagara,unemployment_rate,7.1,2026-10,jobs,2026-11-16T02:53:08Z
+toronto,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+toronto,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+vancouver,employment_rate,63.4,2026-10,jobs,2026-11-16T02:53:08Z
+vancouver,unemployment_rate,6.7,2026-10,jobs,2026-11-16T02:53:08Z
+vaughan,employment_rate,62.2,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+vaughan,unemployment_rate,7.1,2026-10 · Toronto metro,jobs,2026-11-16T02:53:08Z
+victoria,employment_rate,61.4,2026-10,jobs,2026-11-16T02:53:08Z
+victoria,unemployment_rate,4.8,2026-10,jobs,2026-11-16T02:53:08Z
+windsor,employment_rate,59.4,2026-10,jobs,2026-11-16T02:53:08Z
+windsor,unemployment_rate,7.5,2026-10,jobs,2026-11-16T02:53:08Z
+winnipeg,employment_rate,64.3,2026-10,jobs,2026-11-16T02:53:08Z
+winnipeg,unemployment_rate,5.0,2026-10,jobs,2026-11-16T02:53:08Z
